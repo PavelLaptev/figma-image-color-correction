@@ -1,0 +1,40 @@
+.button {
+    user-select: none;
+    outline: none;
+    border: none;
+    border-radius: var(--b-r-s);
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    transition: Background-color var(--t-m);
+
+    span {
+        font-weight: 700;
+        font-size: 13px;
+        text-align: center;
+        pointer-events: none;
+        line-height: 1;
+    }
+
+    .version {
+        transform: translate(4px, -2px);
+        font-size: 10px;
+        color: #76d8b0;
+    }
+}
+
+.fileButton {
+    input {
+        display: none;
+    }
+}
+
+.primary {
+    background-color: var(--c-p-xxl);
+    color: white;
+    &:hover {
+        background-color: var(--c-p-xxxl);
+    }
+}
