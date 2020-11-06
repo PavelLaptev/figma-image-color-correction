@@ -5,18 +5,38 @@ import Range from "./components/Range"
 
 // Application
 const App = ({}) => {
-    const hondleAppFocus = () => {
-        // parent.postMessage({pluginMessage: {type: 'focus'}}, '*');
-        console.log("focus")
-    }
+    const [imageData, setImageData] = React.useState(null)
 
-    const handleOnChange = () => {
+    const handleOnRangeChange = () => {
         console.log("sd")
     }
 
+    React.useEffect(() => {
+        onmessage = event => {
+            let imgData = event.data.pluginMessage.data
+
+            let base64Data =
+                "data:image/png;base64," +
+                btoa(
+                    new Uint8Array(imgData).reduce(function(data, byte) {
+                        return data + String.fromCharCode(byte)
+                    }, "")
+                )
+
+            setImageData(base64Data)
+        }
+    }, [imageData])
+
     return (
-        <section className={styles.app} onClick={hondleAppFocus}>
-            <Range label="Yo" onChange={handleOnChange} />
+        <section className={styles.app}>
+            <div
+                className={styles.previewSection}
+                style={{
+                    backgroundImage: `url("${imageData}")`,
+                }}
+            />
+            <Range label="Yo" onChange={handleOnRangeChange} />
+            <button>save settings</button>
         </section>
     )
 }

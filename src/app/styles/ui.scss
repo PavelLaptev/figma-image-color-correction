@@ -1,5 +1,5 @@
-@import './tokens';
-@import './font-face';
+@import "./tokens";
+@import "./font-face";
 
 *,
 *:before,
@@ -11,8 +11,8 @@
 }
 
 body {
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    font-family: "Inter", sans-serif;
     font-size: 12px;
     margin: 0;
 }

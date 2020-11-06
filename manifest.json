@@ -1,7 +1,7 @@
 {
-  "name": "Image Color Correction",
-  "id": "905806377146336127",
-  "api": "1.0.0",
-  "main": "dist/code.js",
-  "ui": "dist/ui.html"
+    "name": "Image Color Corrector",
+    "id": "905806377146336127",
+    "api": "1.0.0",
+    "main": "dist/code.js",
+    "ui": "dist/ui.html"
 }
