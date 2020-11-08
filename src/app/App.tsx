@@ -3,6 +3,28 @@ import styles from "./app.module.scss"
 //
 import Range from "./components/Range"
 
+// Convert Image to the ArrayBuffer type
+const imageToArrayBuffer = (
+    canvas: HTMLCanvasElement
+): Promise<ArrayBuffer> => {
+    return new Promise((resolve, reject) =>
+        canvas.toBlob(async d => {
+            if (d) {
+                const result = new FileReader()
+                result.addEventListener("loadend", () => {
+                    resolve(new Uint8Array(result.result as ArrayBuffer))
+                })
+                result.addEventListener("error", e => {
+                    reject(e)
+                })
+                result.readAsArrayBuffer(d)
+            } else {
+                reject(new Error("Expected toBlob() to be defined"))
+            }
+        })
+    )
+}
+
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
@@ -47,13 +69,18 @@ const App = ({}) => {
             hue-rotate(${HUERef.current.value}deg) 
             contrast(${contrastRef.current.value}%)
             brightness(${brightnessRef.current.value}%)`
+
+            // imageToArrayBuffer(c).then(bytes => {
+            //     console.log(bytes)
+            // })
+            console.log("sd")
         }
 
         saturationRef.current.addEventListener("change", render)
         HUERef.current.addEventListener("change", render)
         contrastRef.current.addEventListener("change", render)
         brightnessRef.current.addEventListener("change", render)
-    }, [imageData])
+    }, [[imageData]])
 
     return (
         <section className={styles.app}>
