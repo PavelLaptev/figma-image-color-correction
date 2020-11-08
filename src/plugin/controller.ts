@@ -1,5 +1,5 @@
 // Show UI
-figma.showUI(__html__, { width: 240, height: 254 })
+figma.showUI(__html__, { width: 240, height: 450 })
 
 try {
     let node = figma.currentPage.selection[0]

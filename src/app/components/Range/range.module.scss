@@ -1,3 +1,6 @@
 .range {
-  border: 1px solid;
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 4px;
 }
