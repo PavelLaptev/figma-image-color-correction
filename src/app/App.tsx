@@ -1,39 +1,20 @@
 import * as React from "react"
 import styles from "./app.module.scss"
 //
+import { imageToArrayBuffer } from "./utils"
 import Range from "./components/Range"
-
-// Convert Image to the ArrayBuffer type
-const imageToArrayBuffer = (
-    canvas: HTMLCanvasElement
-): Promise<ArrayBuffer> => {
-    return new Promise((resolve, reject) =>
-        canvas.toBlob(async d => {
-            if (d) {
-                const result = new FileReader()
-                result.addEventListener("loadend", () => {
-                    resolve(new Uint8Array(result.result as ArrayBuffer))
-                })
-                result.addEventListener("error", e => {
-                    reject(e)
-                })
-                result.readAsArrayBuffer(d)
-            } else {
-                reject(new Error("Expected toBlob() to be defined"))
-            }
-        })
-    )
-}
 
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
 
     const canvasRef = React.useRef(null)
-    const saturationRef = React.useRef(null)
-    const HUERef = React.useRef(null)
-    const contrastRef = React.useRef(null)
-    const brightnessRef = React.useRef(null)
+    const applyRef = React.useRef(null)
+
+    const [saturationVal, setSaturationVal] = React.useState(100)
+    const [hueVal, setHueVal] = React.useState(0)
+    const [contrastVal, setContrastVal] = React.useState(100)
+    const [brightnessVal, setBrightnessVal] = React.useState(100)
 
     React.useEffect(() => {
         onmessage = event => {
@@ -51,68 +32,100 @@ const App = ({}) => {
         }
 
         let c = canvasRef.current
+        c.width = 300 * 2
+        c.height = 150 * 2
         let ctx = c.getContext("2d")
         let img = new Image()
         img.src = imageData
 
-        img.onload = () => {
-            ctx.clearRect(0, 0, c.width, c.width)
-            ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
-        }
+        const drawNewImage = () => {
+            let hRatio = c.width / img.width
+            let vRatio = c.height / img.height
+            let ratio = Math.min(hRatio, vRatio)
 
-        const render = () => {
             ctx.clearRect(0, 0, c.width, c.height)
-            ctx.globalCompositeOperation = "source-over"
-            ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
-
-            ctx.filter = `saturate(${saturationRef.current.value}%) 
-            hue-rotate(${HUERef.current.value}deg) 
-            contrast(${contrastRef.current.value}%)
-            brightness(${brightnessRef.current.value}%)`
-
-            // imageToArrayBuffer(c).then(bytes => {
-            //     console.log(bytes)
-            // })
-            console.log("sd")
+            ctx.drawImage(
+                img,
+                c.width / 2 - (img.width * ratio) / 2,
+                0,
+                img.width * ratio,
+                img.height * ratio
+            )
         }
 
-        saturationRef.current.addEventListener("change", render)
-        HUERef.current.addEventListener("change", render)
-        contrastRef.current.addEventListener("change", render)
-        brightnessRef.current.addEventListener("change", render)
-    }, [[imageData]])
+        img.onload = () => {
+            drawNewImage()
+            console.log(img.width)
+        }
 
+        drawNewImage()
+        ctx.filter = `saturate(${saturationVal}%)
+            hue-rotate(${hueVal}deg)
+            contrast(${contrastVal}%)
+            brightness(${brightnessVal}%)`
+
+        const applyResults = () => {
+            console.log("s")
+            imageToArrayBuffer(canvasRef.current).then(bytes => {
+                parent.postMessage(
+                    { pluginMessage: { type: "img", bytes } },
+                    "*"
+                )
+            })
+        }
+
+        applyRef.current.addEventListener("click", applyResults)
+
+        return () => applyRef.current.removeEventListener("click", applyResults)
+    }, [[]])
+
+    // SET INPUT STATES
+    const handleSaturation = e => {
+        setSaturationVal(e.target.value)
+    }
+    const handleHue = e => {
+        setHueVal(e.target.value)
+    }
+    const handleContrast = e => {
+        setContrastVal(e.target.value)
+    }
+    const handleBrightness = e => {
+        setBrightnessVal(e.target.value)
+    }
+
+    // RETURN
     return (
         <section className={styles.app}>
             <canvas ref={canvasRef} className={styles.previewSection} />
             <Range
-                id="saturation-range"
+                id="saturation"
                 label="Saturation"
-                reference={saturationRef}
-                value={100}
+                value={saturationVal}
                 max={200}
+                onChange={handleSaturation}
             />
             <Range
-                id="hue-range"
+                id="hue"
                 label="HUE"
-                reference={HUERef}
-                value={0}
+                value={hueVal}
                 max={360}
+                onChange={handleHue}
             />
             <Range
-                id="contrast-range"
+                id="contrast"
                 label="Contrast"
-                reference={contrastRef}
-                value={100}
+                value={contrastVal}
                 max={200}
+                onChange={handleContrast}
             />
             <Range
-                id="contrast-range"
+                id="brightness"
                 label="Brightness"
-                reference={brightnessRef}
-                value={100}
+                value={brightnessVal}
                 max={200}
+                onChange={handleBrightness}
             />
+            <button ref={applyRef}>apply</button>
             <button>save settings</button>
         </section>
     )

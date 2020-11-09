@@ -8,15 +8,10 @@ interface Props {
     min?: number
     max?: number
     reference?: React.Ref<HTMLInputElement>
+    onChange?(event: React.FormEvent<HTMLInputElement>): void
 }
 
 const Range: React.FunctionComponent<Props> = props => {
-    const [val, aetVal] = React.useState(props.value)
-
-    const handleChange = e => {
-        aetVal(e.target.value)
-    }
-
     return (
         <div className={styles.range}>
             <label htmlFor={props.id}>{props.label}</label>
@@ -26,8 +21,8 @@ const Range: React.FunctionComponent<Props> = props => {
                 min={props.min}
                 max={props.max}
                 ref={props.reference}
-                value={val}
-                onChange={handleChange}
+                value={props.value}
+                onChange={props.onChange}
             />
         </div>
     )
