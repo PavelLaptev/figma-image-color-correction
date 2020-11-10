@@ -40,6 +40,8 @@ const App = ({}) => {
             )
         }
 
+        // Filters
+
         const invertColors = data => {
             for (var i = 0; i < data.length; i += 4) {
                 data[i] = data[i] ^ saturationRef.current.value // Invert Red
@@ -48,11 +50,40 @@ const App = ({}) => {
             }
         }
 
+        const truncateColor = value => {
+            if (value < 0) {
+                value = 0
+            } else if (value > 255) {
+                value = 255
+            }
+
+            return value
+        }
+
+        const applyContrast = (data, contrastVal) => {
+            var factor =
+                (259.0 * (contrastVal + 255.0)) /
+                (255.0 * (259.0 - contrastVal))
+
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = truncateColor(factor * (data[i] - 128.0) + 128.0)
+                data[i + 1] = truncateColor(
+                    factor * (data[i + 1] - 128.0) + 128.0
+                )
+                data[i + 2] = truncateColor(
+                    factor * (data[i + 2] - 128.0) + 128.0
+                )
+            }
+        }
+
         const addEffect = () => {
             let imageData = ctx.getImageData(0, 0, c.width, c.height)
             invertColors(imageData.data)
+            applyContrast(imageData.data, brightnessRef.current.value / 2)
             ctx.putImageData(imageData, 0, 0)
         }
+
+        // Render
 
         const render = () => {
             drawNewImage()
@@ -130,10 +161,11 @@ const App = ({}) => {
             <hr />
             <Range
                 id="contrast-range"
-                label="Brightness"
+                label="Contrast"
                 reference={brightnessRef}
-                value={100}
+                value={0}
                 max={300}
+                step={1}
             />
             <button ref={applyRef}>apply</button>
             <button>save settings</button>

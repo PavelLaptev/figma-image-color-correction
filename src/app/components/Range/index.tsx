@@ -7,6 +7,7 @@ interface Props {
     value?: number
     min?: number
     max?: number
+    step?: number
     reference?: React.Ref<HTMLInputElement>
     onChange?(event: React.FormEvent<HTMLInputElement>): void
 }
@@ -28,6 +29,7 @@ const Range: React.FunctionComponent<Props> = props => {
                 max={props.max}
                 ref={props.reference}
                 value={val}
+                step={props.step}
                 onChange={handleChange}
             />
         </div>
@@ -39,6 +41,7 @@ Range.defaultProps = {
     max: 100,
     reference: null,
     value: 50,
+    step: 1,
 } as Partial<Props>
 
 export default Range
