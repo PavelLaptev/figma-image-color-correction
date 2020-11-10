@@ -4,33 +4,6 @@ import styles from "./app.module.scss"
 import { imageToArrayBuffer } from "./utils"
 import Range from "./components/Range"
 
-let Filters = {
-    getPixels: function(c, ctx, img) {
-        ctx.drawImage(img)
-        return ctx.getImageData(0, 0, c.width, c.height)
-    },
-    grayscale: function(pixels) {
-        var d = pixels.data
-        for (var i = 0; i < d.length; i += 4) {
-            var r = d[i]
-            var g = d[i + 1]
-            var b = d[i + 2]
-            // CIE luminance for the RGB
-            // The human eye is bad at seeing red and blue, so we de-emphasize them.
-            var v = 0.2126 * r + 0.7152 * g + 0.0722 * b
-            d[i] = d[i + 1] = d[i + 2] = v
-        }
-        return pixels
-    },
-    filterImage: function(filter, image, c, ctx) {
-        var args = [this.getPixels(image, c, ctx)]
-        for (var i = 2; i < arguments.length; i++) {
-            args.push(arguments[i])
-        }
-        return filter.apply(null, args)
-    },
-}
-
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
@@ -67,19 +40,31 @@ const App = ({}) => {
             )
         }
 
+        const invertColors = data => {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] = data[i] ^ saturationRef.current.value // Invert Red
+                data[i + 1] = data[i + 1] ^ HUERef.current.value // Invert Green
+                data[i + 2] = data[i + 2] ^ contrastRef.current.value // Invert Blue
+            }
+        }
+
+        const addEffect = () => {
+            let imageData = ctx.getImageData(0, 0, c.width, c.height)
+            invertColors(imageData.data)
+            ctx.putImageData(imageData, 0, 0)
+        }
+
         const render = () => {
             drawNewImage()
-
-            ctx.filter = `saturate(${saturationRef.current.value}%)
-            hue-rotate(${HUERef.current.value}deg)
-            contrast(${contrastRef.current.value}%)
-            brightness(${brightnessRef.current.value}%)`
+            addEffect()
+            // ctx.filter = `saturate(${saturationRef.current.value}%)
+            // hue-rotate(${HUERef.current.value}deg)
+            // contrast(${contrastRef.current.value}%)
+            // brightness(${brightnessRef.current.value}%)`
         }
 
         img.onload = () => {
             render()
-            Filters.filterImage("grayscale", img, c, ctx)
-            console.log(img.width)
         }
 
         const applyResults = () => {
@@ -120,27 +105,29 @@ const App = ({}) => {
     return (
         <section className={styles.app}>
             <canvas ref={canvasRef} className={styles.previewSection} />
+            <h2>Invert Channels</h2>
             <Range
                 id="saturation-range"
-                label="Saturation"
+                label="Red"
                 reference={saturationRef}
-                value={100}
-                max={300}
+                value={0}
+                max={255}
             />
             <Range
                 id="hue-range"
-                label="HUE"
+                label="Green"
                 reference={HUERef}
                 value={0}
-                max={360}
+                max={255}
             />
             <Range
                 id="contrast-range"
-                label="Contrast"
+                label="Blue"
                 reference={contrastRef}
-                value={100}
-                max={300}
+                value={0}
+                max={255}
             />
+            <hr />
             <Range
                 id="contrast-range"
                 label="Brightness"
