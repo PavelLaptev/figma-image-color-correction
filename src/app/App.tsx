@@ -4,6 +4,33 @@ import styles from "./app.module.scss"
 import { imageToArrayBuffer } from "./utils"
 import Range from "./components/Range"
 
+let Filters = {
+    getPixels: function(c, ctx, img) {
+        ctx.drawImage(img)
+        return ctx.getImageData(0, 0, c.width, c.height)
+    },
+    grayscale: function(pixels) {
+        var d = pixels.data
+        for (var i = 0; i < d.length; i += 4) {
+            var r = d[i]
+            var g = d[i + 1]
+            var b = d[i + 2]
+            // CIE luminance for the RGB
+            // The human eye is bad at seeing red and blue, so we de-emphasize them.
+            var v = 0.2126 * r + 0.7152 * g + 0.0722 * b
+            d[i] = d[i + 1] = d[i + 2] = v
+        }
+        return pixels
+    },
+    filterImage: function(filter, image, c, ctx) {
+        var args = [this.getPixels(image, c, ctx)]
+        for (var i = 2; i < arguments.length; i++) {
+            args.push(arguments[i])
+        }
+        return filter.apply(null, args)
+    },
+}
+
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
@@ -30,6 +57,7 @@ const App = ({}) => {
             let ratio = Math.min(hRatio, vRatio)
 
             ctx.clearRect(0, 0, c.width, c.height)
+
             ctx.drawImage(
                 img,
                 c.width / 2 - (img.width * ratio) / 2,
@@ -41,6 +69,7 @@ const App = ({}) => {
 
         const render = () => {
             drawNewImage()
+
             ctx.filter = `saturate(${saturationRef.current.value}%)
             hue-rotate(${HUERef.current.value}deg)
             contrast(${contrastRef.current.value}%)
@@ -49,6 +78,7 @@ const App = ({}) => {
 
         img.onload = () => {
             render()
+            Filters.filterImage("grayscale", img, c, ctx)
             console.log(img.width)
         }
 
