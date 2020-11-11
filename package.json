@@ -11,6 +11,7 @@
     "dependencies": {
         "@create-figma-plugin/ui": "0.0.54",
         "calculate-size": "^1.1.1",
+        "fabric": "^4.2.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1"
     },
