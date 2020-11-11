@@ -1,5 +1,5 @@
 // Show UI
-figma.showUI(__html__, { width: 332, height: 500 })
+figma.showUI(__html__, { width: 332, height: 700 })
 
 const sendFullImage = node => {
     figma

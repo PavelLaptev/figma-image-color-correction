@@ -11,10 +11,16 @@ const App = ({}) => {
     const canvasRef = React.useRef(null)
     const applyRef = React.useRef(null)
 
-    const saturationRef = React.useRef(null)
-    const HUERef = React.useRef(null)
+    const invertRedRef = React.useRef(null)
+    const invertGreenRef = React.useRef(null)
+    const invertBlueRef = React.useRef(null)
+    //
     const contrastRef = React.useRef(null)
     const brightnessRef = React.useRef(null)
+    //
+    const channelRedRef = React.useRef(null)
+    const channelGreenRef = React.useRef(null)
+    const channelBlueRef = React.useRef(null)
 
     React.useEffect(() => {
         let c = canvasRef.current
@@ -41,12 +47,27 @@ const App = ({}) => {
         }
 
         // Filters
+        const adjustChannels = data => {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] += 255 * (channelRedRef.current.value / 100)
+                data[i + 1] += 255 * (channelGreenRef.current.value / 100)
+                data[i + 2] += 255 * (channelBlueRef.current.value / 100)
+            }
+        }
+
+        const applyBrightness = (data, brightness) => {
+            for (var i = 0; i < data.length; i += 4) {
+                data[i] += 255 * (brightness / 100)
+                data[i + 1] += 255 * (brightness / 100)
+                data[i + 2] += 255 * (brightness / 100)
+            }
+        }
 
         const invertColors = data => {
             for (var i = 0; i < data.length; i += 4) {
-                data[i] = data[i] ^ saturationRef.current.value // Invert Red
-                data[i + 1] = data[i + 1] ^ HUERef.current.value // Invert Green
-                data[i + 2] = data[i + 2] ^ contrastRef.current.value // Invert Blue
+                data[i] = data[i] ^ invertRedRef.current.value // Invert Red
+                data[i + 1] = data[i + 1] ^ invertGreenRef.current.value // Invert Green
+                data[i + 2] = data[i + 2] ^ invertBlueRef.current.value // Invert Blue
             }
         }
 
@@ -56,7 +77,6 @@ const App = ({}) => {
             } else if (value > 255) {
                 value = 255
             }
-
             return value
         }
 
@@ -79,7 +99,9 @@ const App = ({}) => {
         const addEffect = () => {
             let imageData = ctx.getImageData(0, 0, c.width, c.height)
             invertColors(imageData.data)
-            applyContrast(imageData.data, brightnessRef.current.value / 2)
+            applyContrast(imageData.data, contrastRef.current.value / 1.1)
+            applyBrightness(imageData.data, brightnessRef.current.value)
+            adjustChannels(imageData.data)
             ctx.putImageData(imageData, 0, 0)
         }
 
@@ -91,7 +113,7 @@ const App = ({}) => {
             // ctx.filter = `saturate(${saturationRef.current.value}%)
             // hue-rotate(${HUERef.current.value}deg)
             // contrast(${contrastRef.current.value}%)
-            // brightness(${brightnessRef.current.value}%)`
+            // brightness(${contrastRef.current.value}%)`
         }
 
         img.onload = () => {
@@ -123,11 +145,17 @@ const App = ({}) => {
         }
 
         applyRef.current.addEventListener("click", applyResults)
-
-        saturationRef.current.addEventListener("change", render)
-        HUERef.current.addEventListener("change", render)
+        //
+        invertRedRef.current.addEventListener("change", render)
+        invertGreenRef.current.addEventListener("change", render)
+        invertBlueRef.current.addEventListener("change", render)
+        //
         contrastRef.current.addEventListener("change", render)
         brightnessRef.current.addEventListener("change", render)
+        //
+        channelRedRef.current.addEventListener("change", render)
+        channelGreenRef.current.addEventListener("change", render)
+        channelBlueRef.current.addEventListener("change", render)
 
         return () => applyRef.current.removeEventListener("click", applyResults)
     }, [[]])
@@ -138,23 +166,23 @@ const App = ({}) => {
             <canvas ref={canvasRef} className={styles.previewSection} />
             <h2>Invert Channels</h2>
             <Range
-                id="saturation-range"
+                id="invert-range-red"
                 label="Red"
-                reference={saturationRef}
+                reference={invertRedRef}
                 value={0}
                 max={255}
             />
             <Range
-                id="hue-range"
+                id="invert-range-green"
                 label="Green"
-                reference={HUERef}
+                reference={invertGreenRef}
                 value={0}
                 max={255}
             />
             <Range
-                id="contrast-range"
+                id="invert-range-blue"
                 label="Blue"
-                reference={contrastRef}
+                reference={invertBlueRef}
                 value={0}
                 max={255}
             />
@@ -162,10 +190,47 @@ const App = ({}) => {
             <Range
                 id="contrast-range"
                 label="Contrast"
+                reference={contrastRef}
+                value={0}
+                min={-100}
+                max={100}
+                step={1}
+            />
+            <hr />
+            <Range
+                id="brightness-range"
+                label="Brightness"
                 reference={brightnessRef}
                 value={0}
-                max={300}
+                min={-100}
+                max={100}
                 step={1}
+            />
+            <hr />
+            <h2>Channels Manipulation</h2>
+            <Range
+                id="channel-range-red"
+                label="Red"
+                reference={channelRedRef}
+                value={0}
+                min={-100}
+                max={0}
+            />
+            <Range
+                id="channel-range-green"
+                label="Green"
+                reference={channelGreenRef}
+                value={0}
+                min={-100}
+                max={0}
+            />
+            <Range
+                id="channel-range-blue"
+                label="Blue"
+                reference={channelBlueRef}
+                value={0}
+                min={-100}
+                max={0}
             />
             <button ref={applyRef}>apply</button>
             <button>save settings</button>
