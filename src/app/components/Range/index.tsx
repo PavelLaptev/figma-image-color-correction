@@ -2,7 +2,7 @@ import * as React from "react"
 import styles from "./range.module.scss"
 
 interface Props {
-    label: string
+    label?: string
     id: string
     value?: number
     min?: number
@@ -21,7 +21,9 @@ const Range: React.FunctionComponent<Props> = props => {
 
     return (
         <div className={styles.range}>
-            <label htmlFor={props.id}>{props.label}</label>
+            {props.label ? (
+                <label htmlFor={props.id}>{props.label}</label>
+            ) : null}
             <input
                 type="range"
                 id={props.id}
@@ -42,6 +44,7 @@ Range.defaultProps = {
     reference: null,
     value: 50,
     step: 1,
+    label: null,
 } as Partial<Props>
 
 export default Range

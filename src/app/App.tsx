@@ -3,56 +3,51 @@ import styles from "./app.module.scss"
 import fx from "glfx"
 //
 // import { imageToArrayBuffer } from "./utils"
-// import Range from "./components/Range"
-
-const drawCanvas = (c, ctx, source) => {
-    let hRatio = c.width / source.width
-    let vRatio = c.height / source.height
-    let ratio = Math.min(hRatio, vRatio)
-
-    ctx.drawImage(
-        source,
-        c.width / 2 - (source.width * ratio) / 2,
-        0,
-        source.width * ratio,
-        source.height * ratio
-    )
-}
+import Range from "./components/Range"
 
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
     const canvasRef = React.useRef(null)
 
+    const blurRef = React.useRef(null)
+    const sharpenRadiusRef = React.useRef(null)
+    const sharpenStrengthRef = React.useRef(null)
+
     React.useEffect(() => {
         const c = canvasRef.current
-        c.width = 300 * 2
-        c.height = 150 * 2
         const ctx = c.getContext("2d")
 
-        const image = new Image()
+        const fxc = fx.canvas()
+        fxc.width = c.width
+        fxc.height = c.height
 
-        image.onload = () => {
-            const fxc = fx.canvas()
-            fxc.width = 300
-            fxc.height = 150
-            const texture = fxc.texture(image)
-            // document.body.appendChild(fxc)
-            // ctx.drawImage(image, 0, 0)
-            fxc.draw(texture)
-                .triangleBlur(20)
+        const image = new Image()
+        image.src = imageData
+
+        const drawCanvas = () => {
+            ctx.clearRect(0, 0, c.width, c.height)
+
+            fxc.draw(fxc.texture(image))
+                .triangleBlur(Number(blurRef.current.value))
+                .unsharpMask(
+                    Number(sharpenRadiusRef.current.value),
+                    Number(sharpenStrengthRef.current.value)
+                )
                 .update()
 
-            ctx.drawImage(fxc, 0, 0)
-
-            // const c = canvasRef.current
-            // c.width = 300 * 2
-            // c.height = 150 * 2
-            // const ctx = c.getContext("2d")
-            // setImageData(image)
-            // drawCanvas(c, ctx, image)
+            ctx.drawImage(fxc, 0, 0, c.width, c.height)
         }
-        image.src = imageData
+
+        image.onload = () => {
+            c.width = 300 * 2
+            c.height = (image.height * c.width) / image.width
+            drawCanvas()
+
+            blurRef.current.addEventListener("change", drawCanvas)
+            sharpenRadiusRef.current.addEventListener("change", drawCanvas)
+            sharpenStrengthRef.current.addEventListener("change", drawCanvas)
+        }
 
         onmessage = event => {
             let imgData = event.data.pluginMessage.data
@@ -76,14 +71,36 @@ const App = ({}) => {
         // img.src = sourceImg
 
         // img.onload = () => {}
+
+        return () => {
+            blurRef.current.removeEventListener("click", drawCanvas)
+            sharpenRadiusRef.current.removeEventListener("change", drawCanvas)
+            sharpenStrengthRef.current.removeEventListener("change", drawCanvas)
+        }
     }, [imageData])
 
     // RETURN
     return (
         <section className={styles.app}>
             <canvas ref={canvasRef} className={styles.previewSection} />
-            <h2>Invert Channels</h2>
-
+            <h2>blur</h2>
+            <Range id="blue-range" reference={blurRef} value={0} max={100} />
+            <h2>Sharpen</h2>
+            <Range
+                id="sharpen-radius-range"
+                label="Radius"
+                reference={sharpenRadiusRef}
+                value={5}
+                max={10}
+            />
+            <Range
+                id="sharpen-strength-range"
+                label="Strength"
+                reference={sharpenStrengthRef}
+                value={0}
+                max={10}
+            />
+            <button>apply changes</button>
             <button>save settings</button>
         </section>
     )
