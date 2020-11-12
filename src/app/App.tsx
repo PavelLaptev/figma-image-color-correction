@@ -2,13 +2,15 @@ import * as React from "react"
 import styles from "./app.module.scss"
 import fx from "glfx"
 //
-// import { imageToArrayBuffer } from "./utils"
+import { imageToArrayBuffer } from "./utils"
 import Range from "./components/Range"
 
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
     const canvasRef = React.useRef(null)
+
+    const applyRef = React.useRef(null)
 
     const blurRef = React.useRef(null)
     const sharpenRadiusRef = React.useRef(null)
@@ -26,6 +28,8 @@ const App = ({}) => {
         image.src = imageData
 
         const drawCanvas = () => {
+            c.width = 300 * 2
+            c.height = (image.height * c.width) / image.width
             ctx.clearRect(0, 0, c.width, c.height)
 
             fxc.draw(fxc.texture(image))
@@ -40,8 +44,6 @@ const App = ({}) => {
         }
 
         image.onload = () => {
-            c.width = 300 * 2
-            c.height = (image.height * c.width) / image.width
             drawCanvas()
 
             blurRef.current.addEventListener("change", drawCanvas)
@@ -69,13 +71,47 @@ const App = ({}) => {
         // let ctx = c.getContext("2d")
         // let img = new Image()
         // img.src = sourceImg
+        c.resizeAndExport = function(width, height) {
+            // create a new canvas
+            let c = document.createElement("canvas")
+            // set its width&height to the required ones
+            c.width = width
+            c.height = height
+            // draw our canvas to the new one
+            c.getContext("2d").drawImage(
+                this,
+                0,
+                0,
+                this.width,
+                this.height,
+                0,
+                0,
+                width,
+                height
+            )
+            // return the resized canvas dataURL
+            return c
+        }
 
         // img.onload = () => {}
+        const applyResults = () => {
+            imageToArrayBuffer(
+                c.resizeAndExport(image.width, image.height)
+            ).then(bytes => {
+                parent.postMessage(
+                    { pluginMessage: { type: "img", bytes } },
+                    "*"
+                )
+            })
+        }
+
+        applyRef.current.addEventListener("click", applyResults)
 
         return () => {
             blurRef.current.removeEventListener("click", drawCanvas)
             sharpenRadiusRef.current.removeEventListener("change", drawCanvas)
             sharpenStrengthRef.current.removeEventListener("change", drawCanvas)
+            applyRef.current.removeEventListener("click", applyResults)
         }
     }, [imageData])
 
@@ -100,7 +136,7 @@ const App = ({}) => {
                 value={0}
                 max={10}
             />
-            <button>apply changes</button>
+            <button ref={applyRef}>apply changes</button>
             <button>save settings</button>
         </section>
     )
