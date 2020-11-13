@@ -17,10 +17,10 @@ const App = ({}) => {
     const sharpenStrengthRef = React.useRef(null)
 
     React.useEffect(() => {
-        const c = canvasRef.current
-        const ctx = c.getContext("2d")
+        let c = canvasRef.current
+        let ctx = c.getContext("2d")
 
-        const fxc = fx.canvas()
+        let fxc = fx.canvas()
         fxc.width = c.width
         fxc.height = c.height
 
@@ -28,6 +28,7 @@ const App = ({}) => {
         image.src = imageData
 
         const drawCanvas = () => {
+            console.log("s")
             c.width = 300 * 2
             c.height = (image.height * c.width) / image.width
             ctx.clearRect(0, 0, c.width, c.height)
@@ -65,39 +66,42 @@ const App = ({}) => {
             setImageData(base64Data)
         }
 
-        // let c = canvasRef.current
-        // c.width = 300 * 2
-        // c.height = 150 * 2
-        // let ctx = c.getContext("2d")
-        // let img = new Image()
-        // img.src = sourceImg
-        c.resizeAndExport = function(width, height) {
+        const resizeAndExport = function() {
             // create a new canvas
-            let c = document.createElement("canvas")
-            // set its width&height to the required ones
-            c.width = width
-            c.height = height
-            // draw our canvas to the new one
-            c.getContext("2d").drawImage(
-                this,
-                0,
-                0,
-                this.width,
-                this.height,
-                0,
-                0,
-                width,
-                height
-            )
+            let finalCanvas = canvasRef.current
+            let finalCanvasCtx = finalCanvas.getContext("2d")
+
+            finalCanvas.width = image.width
+            finalCanvas.height = image.height
+
+            let finalFXCanvas = fx.canvas()
+            finalFXCanvas.width = image.width
+            finalFXCanvas.height = image.height
+
+            // draw our canvas to the new one`
+            finalFXCanvas
+                .draw(finalFXCanvas.texture(image))
+                .triangleBlur(Number(blurRef.current.value))
+                .unsharpMask(
+                    Number(sharpenRadiusRef.current.value),
+                    Number(sharpenStrengthRef.current.value)
+                )
+                .update()
+
             // return the resized canvas dataURL
-            return c
+            finalCanvasCtx.drawImage(
+                finalFXCanvas,
+                0,
+                0,
+                image.width,
+                image.height
+            )
+            return finalFXCanvas
         }
 
         // img.onload = () => {}
         const applyResults = () => {
-            imageToArrayBuffer(
-                c.resizeAndExport(image.width, image.height)
-            ).then(bytes => {
+            imageToArrayBuffer(resizeAndExport()).then(bytes => {
                 parent.postMessage(
                     { pluginMessage: { type: "img", bytes } },
                     "*"
