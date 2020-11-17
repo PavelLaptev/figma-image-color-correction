@@ -1,29 +1,30 @@
 // Show UI
 figma.showUI(__html__, { width: 332, height: 700 })
 
-const sendFullImage = node => {
-    figma
-        .getImageByHash(node["fills"][node["fills"].length - 1].imageHash)
-        .getBytesAsync()
-        .then(res => figma.ui.postMessage({ type: "image", data: res }))
+const sendFullImage = () => {
+    try {
+        let node = figma.currentPage.selection[0]
+        figma
+            .getImageByHash(node["fills"][node["fills"].length - 1].imageHash)
+            .getBytesAsync()
+            .then(res => figma.ui.postMessage({ type: "image", data: res }))
+    } catch {
+        figma.ui.postMessage({ type: "image", data: null })
+        figma.notify("📌 Select something…", {
+            timeout: 2000,
+        })
+    }
 }
 
-try {
-    let node = figma.currentPage.selection[0]
-    sendFullImage(node)
-} catch {
-    figma.ui.postMessage({ type: "image", data: null })
-}
+sendFullImage()
 
 figma.on("selectionchange", () => {
-    let node = figma.currentPage.selection[0]
-
-    sendFullImage(node)
+    sendFullImage()
 })
 
 figma.ui.onmessage = msg => {
     let node = figma.currentPage.selection[0]
-    if (msg.type === "img") {
+    if (msg.type === "img" && node) {
         const currentFills = node["fills"]
         const imageHash = figma.createImage(msg.bytes).hash
 
@@ -36,14 +37,11 @@ figma.ui.onmessage = msg => {
         }
 
         node["fills"] = [...currentFills, ...[newFill]]
+    } else {
+        figma.notify("📌 Select something…", {
+            timeout: 2000,
+        })
     }
 }
-
-// figma.ui.onmessage = msg => {
-//   const target = figma.currentPage.selection[0];
-
-//   console.log(target);
-//   // figma.ui.postMessage({type: 'selection', selected: figma.currentPage.selection[0]});
-// };
 
 figma.currentPage.setRelaunchData({ open: "" })

@@ -1,5 +1,6 @@
 import * as React from "react"
 import styles from "./range.module.scss"
+import { rangeInterpolation } from "../../../utils"
 
 interface Props {
     label?: string
@@ -21,9 +22,6 @@ const Range: React.FunctionComponent<Props> = props => {
 
     return (
         <div className={styles.range}>
-            {props.label ? (
-                <label htmlFor={props.id}>{props.label}</label>
-            ) : null}
             <input
                 type="range"
                 id={props.id}
@@ -33,6 +31,18 @@ const Range: React.FunctionComponent<Props> = props => {
                 value={val}
                 step={props.step}
                 onChange={handleChange}
+            />
+            <div
+                className={styles.scale}
+                style={{
+                    width: `${rangeInterpolation(
+                        props.min,
+                        props.max,
+                        1,
+                        100,
+                        val
+                    )}%`,
+                }}
             />
         </div>
     )
