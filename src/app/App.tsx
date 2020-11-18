@@ -3,12 +3,14 @@ import styles from "./app.module.scss"
 import fx from "../glfx/glfx"
 //
 import { imageToArrayBuffer, calculateAspectRatioFit } from "./utils"
+import AdjustSection from "./components/AdjustSection"
 import RangeContainer from "./components/RangeContainer"
 import Range from "./components/Range"
 
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
+    // const [currentItem, setCurrentItem] = React.useState(null)
     const canvasRef = React.useRef(null)
 
     const applyRef = React.useRef(null)
@@ -79,6 +81,26 @@ const App = ({}) => {
             ctx.drawImage(fxc, 0, 0, c.width, c.height)
         }
 
+        const resizeAndExport = function() {
+            // create a new canvas
+            let finalFXCanvas = fx.canvas()
+            finalFXCanvas.width = image.width
+            finalFXCanvas.height = image.height
+            console.log("sd")
+            // draw our canvas to the new one
+            addEffectsToCanvas(finalFXCanvas)
+
+            // return the resized canvas dataURL
+            // finalCanvasCtx.drawImage(
+            //     finalFXCanvas,
+            //     0,
+            //     0,
+            //     image.width,
+            //     image.height
+            // )
+            return finalFXCanvas
+        }
+
         image.onload = () => {
             drawCanvas()
 
@@ -105,32 +127,6 @@ const App = ({}) => {
             }
         }
 
-        const resizeAndExport = function() {
-            // create a new canvas
-            let finalCanvas = canvasRef.current
-            let finalCanvasCtx = finalCanvas.getContext("2d")
-
-            finalCanvas.width = image.width
-            finalCanvas.height = image.height
-
-            let finalFXCanvas = fx.canvas()
-            finalFXCanvas.width = image.width
-            finalFXCanvas.height = image.height
-
-            // draw our canvas to the new one`
-            addEffectsToCanvas(finalFXCanvas)
-
-            // return the resized canvas dataURL
-            finalCanvasCtx.drawImage(
-                finalFXCanvas,
-                0,
-                0,
-                image.width,
-                image.height
-            )
-            return finalFXCanvas
-        }
-
         // img.onload = () => {}
         const applyResults = () => {
             imageToArrayBuffer(resizeAndExport()).then(bytes => {
@@ -144,6 +140,7 @@ const App = ({}) => {
         applyRef.current.addEventListener("click", applyResults)
 
         return () => {
+            applyRef.current.removeEventListener("click", applyResults)
             refsRangesArray.forEach(i => {
                 i.current.removeEventListener("change", drawCanvas)
             })
@@ -157,50 +154,54 @@ const App = ({}) => {
                 <canvas ref={canvasRef} className={styles.canvas} />
             </div>
 
-            <h2 className={styles.h2}>Contrast and Brightness</h2>
-            <RangeContainer>
-                <Range
-                    id="brightness-range"
-                    reference={BrightnessRef}
-                    value={0}
-                    min={-80}
-                    max={80}
-                />
-                <Range
-                    id="contrast-range"
-                    reference={ContrastRef}
-                    value={0}
-                    min={-99}
-                    max={99}
-                />
-            </RangeContainer>
+            <AdjustSection title="Brightness and contrast">
+                <RangeContainer>
+                    <Range
+                        id="brightness-range"
+                        reference={BrightnessRef}
+                        value={0}
+                        min={-80}
+                        max={80}
+                    />
+                    <Range
+                        id="contrast-range"
+                        reference={ContrastRef}
+                        value={0}
+                        min={-99}
+                        max={99}
+                    />
+                </RangeContainer>
+            </AdjustSection>
 
-            <h2 className={styles.h2}>blur</h2>
-            <RangeContainer>
-                <Range
-                    id="blue-range"
-                    reference={blurRef}
-                    value={0}
-                    max={100}
-                />
-            </RangeContainer>
-            <h2 className={styles.h2}>Sharpen</h2>
-            <RangeContainer>
-                <Range
-                    id="sharpen-radius-range"
-                    label="Radius"
-                    reference={sharpenRadiusRef}
-                    value={5}
-                    max={10}
-                />
-                <Range
-                    id="sharpen-strength-range"
-                    label="Strength"
-                    reference={sharpenStrengthRef}
-                    value={0}
-                    max={10}
-                />
-            </RangeContainer>
+            <AdjustSection title="Blur">
+                <RangeContainer>
+                    <Range
+                        id="blur-range"
+                        reference={blurRef}
+                        value={0}
+                        max={100}
+                    />
+                </RangeContainer>
+            </AdjustSection>
+
+            <AdjustSection title="Sharpen">
+                <RangeContainer>
+                    <Range
+                        id="sharpen-radius-range"
+                        label="Radius"
+                        reference={sharpenRadiusRef}
+                        value={5}
+                        max={10}
+                    />
+                    <Range
+                        id="sharpen-strength-range"
+                        label="Strength"
+                        reference={sharpenStrengthRef}
+                        value={0}
+                        max={10}
+                    />
+                </RangeContainer>
+            </AdjustSection>
             <button ref={applyRef}>apply changes</button>
             <button>save settings</button>
         </section>
