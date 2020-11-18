@@ -1,22 +1,44 @@
-:root {
-    --base-clr: #101010;
-    --basemiddle-clr: #222222;
-}
-
 hr {
     margin: 15px 0;
 }
 
 .app {
-    padding: 16px;
+    padding: 24px;
     width: 100%;
+    background-color: var(--base-clr);
 }
 
-.previewSection {
-    width: 300px;
-    // height: 160px;
-    background-color: rgba(0, 0, 0, 0.4);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
+.h2 {
+    color: var(--primary-clr);
+}
+
+.canvasWrap {
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    width: 100%;
+    height: 300px;
+    display: flex;
+    background-position: 0px 0px, 8px 8px;
+    background-size: 18px 18px;
+    background-image: linear-gradient(
+            45deg,
+            var(--checker-clr) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--checker-clr) 75%,
+            var(--checker-clr) 100%
+        ),
+        linear-gradient(
+            45deg,
+            var(--checker-clr) 25%,
+            transparent 25%,
+            transparent 75%,
+            var(--checker-clr) 75%,
+            var(--checker-clr) 100%
+        );
+    background-color: var(--base-middle-clr);
+}
+
+.canvas {
+    margin: auto;
 }

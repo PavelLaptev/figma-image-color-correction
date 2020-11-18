@@ -2,7 +2,7 @@ import * as React from "react"
 import styles from "./rangecontainer.module.scss"
 
 interface Props {
-    height: string
+    height?: string
 }
 
 const RangeContainer: React.FunctionComponent<Props> = props => {
@@ -14,7 +14,7 @@ const RangeContainer: React.FunctionComponent<Props> = props => {
 }
 
 RangeContainer.defaultProps = {
-    height: "100px",
+    height: "108px",
 } as Partial<Props>
 
 export default RangeContainer

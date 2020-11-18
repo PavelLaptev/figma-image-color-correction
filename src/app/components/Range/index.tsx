@@ -1,6 +1,6 @@
 import * as React from "react"
 import styles from "./range.module.scss"
-import { rangeInterpolation } from "../../../utils"
+import { rangeInterpolation } from "../../utils"
 
 interface Props {
     label?: string

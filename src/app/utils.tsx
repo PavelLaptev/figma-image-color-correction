@@ -20,6 +20,7 @@ export const imageToArrayBuffer = (
     )
 }
 
+//
 export const drawNewImage = (c, ctx, img) => {
     let hRatio = 300 / img.width
     let vRatio = 150 / img.height
@@ -34,3 +35,22 @@ export const drawNewImage = (c, ctx, img) => {
         img.height * ratio
     )
 }
+
+//
+export const calculateAspectRatioFit = (
+    srcWidth,
+    srcHeight,
+    maxWidth,
+    maxHeight
+) => {
+    var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight)
+
+    return { width: srcWidth * ratio, height: srcHeight * ratio }
+}
+
+//
+const lerp = (x, y, a) => x * (1 - a) + y * a
+const clamp = (a, min = 0, max = 1) => Math.min(max, Math.max(min, a))
+const invlerp = (x, y, a) => clamp((a - x) / (y - x))
+export const rangeInterpolation = (x1, y1, x2, y2, a) =>
+    Math.round(lerp(x2, y2, invlerp(x1, y1, a)))

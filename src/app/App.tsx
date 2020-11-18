@@ -2,7 +2,7 @@ import * as React from "react"
 import styles from "./app.module.scss"
 import fx from "../glfx/glfx"
 //
-import { imageToArrayBuffer } from "./utils"
+import { imageToArrayBuffer, calculateAspectRatioFit } from "./utils"
 import RangeContainer from "./components/RangeContainer"
 import Range from "./components/Range"
 
@@ -45,7 +45,6 @@ const App = ({}) => {
             canvas
                 .draw(canvas.texture(image))
                 .triangleBlur(Number(blurRef.current.value))
-                .adjustchannels(-255, 0, 0)
                 .brightnessContrast(
                     Number(BrightnessRef.current.value / 100),
                     Number(ContrastRef.current.value / 100)
@@ -58,8 +57,21 @@ const App = ({}) => {
         }
 
         const drawCanvas = () => {
-            c.width = 300 * 2
-            c.height = (image.height * c.width) / image.width
+            let wRatio = calculateAspectRatioFit(
+                image.width,
+                image.height,
+                402,
+                300
+            ).width
+            let hRatio = calculateAspectRatioFit(
+                image.width,
+                image.height,
+                402,
+                300
+            ).height
+
+            c.width = wRatio
+            c.height = hRatio
             ctx.clearRect(0, 0, c.width, c.height)
 
             addEffectsToCanvas(fxc)
@@ -141,9 +153,12 @@ const App = ({}) => {
     // RETURN
     return (
         <section className={styles.app}>
-            <canvas ref={canvasRef} className={styles.previewSection} />
-            <h2>Contrast and Brightness</h2>
-            <RangeContainer height={"150px"}>
+            <div className={styles.canvasWrap}>
+                <canvas ref={canvasRef} className={styles.canvas} />
+            </div>
+
+            <h2 className={styles.h2}>Contrast and Brightness</h2>
+            <RangeContainer>
                 <Range
                     id="brightness-range"
                     reference={BrightnessRef}
@@ -160,8 +175,8 @@ const App = ({}) => {
                 />
             </RangeContainer>
 
-            <h2>blur</h2>
-            <RangeContainer height={"150px"}>
+            <h2 className={styles.h2}>blur</h2>
+            <RangeContainer>
                 <Range
                     id="blue-range"
                     reference={blurRef}
@@ -169,8 +184,8 @@ const App = ({}) => {
                     max={100}
                 />
             </RangeContainer>
-            <h2>Sharpen</h2>
-            <RangeContainer height={"150px"}>
+            <h2 className={styles.h2}>Sharpen</h2>
+            <RangeContainer>
                 <Range
                     id="sharpen-radius-range"
                     label="Radius"
