@@ -8,7 +8,10 @@ interface Props {
 
 const AdjustSection: React.FunctionComponent<Props> = props => {
     return (
-        <div className={styles.wrap}>
+        <div
+            className={styles.wrap}
+            style={{ display: props.show ? "flex" : "none" }}
+        >
             <h2 className={styles.title}>{props.title}</h2>
             {props.children}
         </div>
