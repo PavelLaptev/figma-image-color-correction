@@ -1,5 +1,5 @@
 import * as React from "react"
-import styles from "./rangecontainer.module.scss"
+import styles from "./styles.module.scss"
 
 interface Props {
     height?: string

@@ -1,5 +1,5 @@
 import * as React from "react"
-import styles from "./range.module.scss"
+import styles from "./styles.module.scss"
 import { rangeInterpolation } from "../../utils"
 
 interface Props {

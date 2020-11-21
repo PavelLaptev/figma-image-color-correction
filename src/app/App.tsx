@@ -4,6 +4,7 @@ import fx from "../glfx/glfx"
 //
 import { imageToArrayBuffer, calculateAspectRatioFit } from "./utils"
 import AdjustSection from "./components/AdjustSection"
+import Tools from "./components/Tools"
 import RangeContainer from "./components/RangeContainer"
 import Range from "./components/Range"
 
@@ -86,24 +87,15 @@ const App = ({}) => {
             let finalFXCanvas = fx.canvas()
             finalFXCanvas.width = image.width
             finalFXCanvas.height = image.height
-            console.log("sd")
+
             // draw our canvas to the new one
             addEffectsToCanvas(finalFXCanvas)
 
-            // return the resized canvas dataURL
-            // finalCanvasCtx.drawImage(
-            //     finalFXCanvas,
-            //     0,
-            //     0,
-            //     image.width,
-            //     image.height
-            // )
             return finalFXCanvas
         }
 
         image.onload = () => {
             drawCanvas()
-
             refsRangesArray.forEach(i => {
                 i.current.addEventListener("change", drawCanvas)
             })
@@ -202,6 +194,9 @@ const App = ({}) => {
                     />
                 </RangeContainer>
             </AdjustSection>
+
+            <Tools />
+
             <button ref={applyRef}>apply changes</button>
             <button>save settings</button>
         </section>

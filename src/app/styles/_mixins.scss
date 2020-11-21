@@ -1,0 +1,9 @@
+@mixin btn-mixin {
+    height: 38px;
+    padding: 8px;
+    border-radius: var(--radius-m);
+    transition: background var(--transition-m);
+    &:hover {
+        background-color: var(--base-middle-clr);
+    }
+}
