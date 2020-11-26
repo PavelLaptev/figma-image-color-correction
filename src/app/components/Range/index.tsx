@@ -4,20 +4,21 @@ import { rangeInterpolation } from "../../utils"
 
 interface Props {
     label?: string
-    id: string
+    id?: string
     value?: number
     min?: number
     max?: number
     step?: number
     reference?: React.Ref<HTMLInputElement>
+    color?: string
     onChange?(event: React.FormEvent<HTMLInputElement>): void
 }
 
 const Range: React.FunctionComponent<Props> = props => {
-    const [val, aetVal] = React.useState(props.value)
+    const [val, setVal] = React.useState(props.value)
 
     const handleChange = e => {
-        aetVal(e.target.value)
+        setVal(e.target.value)
     }
 
     return (
@@ -32,6 +33,7 @@ const Range: React.FunctionComponent<Props> = props => {
                 step={props.step}
                 onChange={handleChange}
             />
+            <span className={styles.label}>{props.label}</span>
             <div
                 className={styles.scale}
                 style={{
@@ -42,6 +44,11 @@ const Range: React.FunctionComponent<Props> = props => {
                         100,
                         val
                     )}%`,
+                    backgroundImage: `linear-gradient(
+                        270deg,
+                        #${props.color} 14.35%,
+                        #${props.color}00 104.48%
+                    )`,
                 }}
             />
         </div>
@@ -55,6 +62,10 @@ Range.defaultProps = {
     value: 50,
     step: 1,
     label: null,
+    color: "7748fc",
 } as Partial<Props>
 
 export default Range
+
+// TODO
+// Add a color variable

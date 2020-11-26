@@ -5,10 +5,12 @@
     --base-clr: #101010;
     --base-middle-clr: #222222;
     --base-light-clr: #323232;
+
     --secondary-clr: #7748fc;
     --primary-clr: #fff;
 
     --checker-clr: rgba(131, 131, 131, 0.2);
 
-    --transition-m: 0.1 ease;
+    --transition-m: 0.1s ease-in-out;
+    --transition-l: 0.2s ease-in-out;
 }

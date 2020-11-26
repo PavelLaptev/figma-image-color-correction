@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: #222222;
+    background: var(--base-middle-clr);
 
     input {
         opacity: 0;
@@ -14,12 +14,22 @@
     }
 }
 
+.label {
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.5;
+    position: absolute;
+    color: var(--primary-clr);
+    bottom: 10px;
+    left: 10px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 12px;
+    line-height: 1.1;
+}
+
 .scale {
     display: flex;
     height: 100%;
-    background: linear-gradient(
-        270deg,
-        #7748fc 14.35%,
-        rgba(119, 72, 252, 0) 104.48%
-    );
 }

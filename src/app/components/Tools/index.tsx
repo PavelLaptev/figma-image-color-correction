@@ -3,42 +3,30 @@ import styles from "./styles.module.scss"
 
 import ToolButton from "../ToolButton"
 
-interface Props {}
+interface Props {
+    onChange?: (e) => void
+    tools: Array<string>
+}
 
-const tools = [
-    "brightnes-contrast",
-    "hue",
-    "channels",
-    "exposure",
-    "gamma",
-    "blur",
-    "lens-blur",
-    "sharp",
-    "vibrance",
-    "invert",
-    "mirror",
-    "dotted",
-    "bulge",
-    "noise",
-]
-
-const Tools: React.FunctionComponent<Props> = () => {
-    const [selectedRadio, setSelectedRadio] = React.useState(null)
+const Tools: React.FunctionComponent<Props> = props => {
+    const [selectedRadio, setSelectedRadio] = React.useState(props.tools[0])
 
     const handleChange = e => {
-        console.log(e.target.value)
         setSelectedRadio(e.target.value)
+        props.onChange(e)
     }
 
     return (
         <form className={styles.wrap} onChange={handleChange}>
-            {tools.map((item, i) => {
+            {props.tools.map((item, i) => {
                 return (
                     <ToolButton
-                        icon={tools[i]}
+                        icon={props.tools[i]}
                         className={styles.button}
                         key={`${item}-icon-button`}
-                        checked={selectedRadio === tools[i] ? true : false}
+                        checked={
+                            selectedRadio === props.tools[i] ? true : false
+                        }
                     />
                 )
             })}

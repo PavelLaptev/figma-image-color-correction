@@ -1493,7 +1493,7 @@ var fx = (function() {
      * @description    Adds black and white noise to the image.
      * @param amount   0 to 1 (0 for no effect, 1 for maximum noise)
      */
-    function noise(amount) {
+    function noise(amount, diffStrength) {
         gl.noise =
             gl.noise ||
             new Shader(
@@ -1501,6 +1501,7 @@ var fx = (function() {
                 "\
           uniform sampler2D texture;\
           uniform float amount;\
+          uniform float diffStrength;\
           varying vec2 texCoord;\
           float rand(vec2 co) {\
               return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\
@@ -1508,7 +1509,7 @@ var fx = (function() {
           void main() {\
               vec4 color = texture2D(texture, texCoord);\
               \
-              float diff = (rand(texCoord) - 0.5) * amount;\
+              float diff = (rand(texCoord) - diffStrength) * amount;\
               color.r += diff;\
               color.g += diff;\
               color.b += diff;\
@@ -1520,6 +1521,7 @@ var fx = (function() {
 
         simpleShader.call(this, gl.noise, {
             amount: clamp(0, amount, 1),
+            diffStrength: diffStrength,
         })
 
         return this
@@ -2167,12 +2169,13 @@ var fx = (function() {
      * @param angle   The rotation of the pattern in radians.
      * @param size    The diameter of a dot in pixels.
      */
-    function dotScreen(centerX, centerY, angle, size) {
-        gl.dotScreen =
-            gl.dotScreen ||
-            new Shader(
-                null,
-                "\
+    function dotScreen(init, centerX, centerY, angle, size) {
+        if (init) {
+            gl.dotScreen =
+                gl.dotScreen ||
+                new Shader(
+                    null,
+                    "\
           uniform sampler2D texture;\
           uniform vec2 center;\
           uniform float angle;\
@@ -2196,15 +2199,17 @@ var fx = (function() {
               gl_FragColor = vec4(vec3(average * 10.0 - 5.0 + pattern()), color.a);\
           }\
       "
-            )
+                )
 
-        simpleShader.call(this, gl.dotScreen, {
-            center: [centerX, centerY],
-            angle: angle,
-            scale: Math.PI / size,
-            texSize: [this.width, this.height],
-        })
+            simpleShader.call(this, gl.dotScreen, {
+                center: [centerX, centerY],
+                angle: angle,
+                scale: Math.PI / size,
+                texSize: [this.width, this.height],
+            })
 
+            return this
+        }
         return this
     }
 
@@ -2483,38 +2488,44 @@ var fx = (function() {
 
     // src/filters\fun\invertcolor.js
     /**
-     * @description Invert the colors!
-     */
+    @description Invert the colors!
+    */
 
-    function invertColor() {
-        gl.invertColor =
-            gl.invertColor ||
-            new Shader(
-                null,
-                "\
-          uniform sampler2D texture;\
-          varying vec2 texCoord;\
-          void main() {\
-              vec4 color = texture2D(texture, texCoord);\
-              color.rgb = 1.0 - color.rgb;\
-              gl_FragColor = color;\
-          }\
-      "
-            )
-        simpleShader.call(this, gl.invertColor, {})
+    function invertColor(apply) {
+        if (apply) {
+            gl.invertColor =
+                gl.invertColor ||
+                new Shader(
+                    null,
+                    "\
+                uniform sampler2D texture;\
+                varying vec2 texCoord;\
+                void main() {\
+                    vec4 color = texture2D(texture, texCoord);\
+                    color.rgb = 1.0 - color.rgb;\
+                    gl_FragColor = color;\
+                }\
+            "
+                )
+            simpleShader.call(this, gl.invertColor, {})
+            return this
+        }
+
         return this
     }
+
     // src/filters\fun\mirror.js
     /**
      * @filter           Mirror
      * @description      mirror rhe image horizontaly
      */
-    function mirror() {
-        gl.mirror =
-            gl.mirror ||
-            new Shader(
-                null,
-                "\
+    function mirror(apply) {
+        if (apply) {
+            gl.mirror =
+                gl.mirror ||
+                new Shader(
+                    null,
+                    "\
           uniform sampler2D texture;\
           uniform float brightness;\
           varying vec2 texCoord;\
@@ -2523,9 +2534,12 @@ var fx = (function() {
               gl_FragColor = color;\
           }\
       "
-            )
+                )
 
-        simpleShader.call(this, gl.mirror, {})
+            simpleShader.call(this, gl.mirror, {})
+
+            return this
+        }
 
         return this
     }
