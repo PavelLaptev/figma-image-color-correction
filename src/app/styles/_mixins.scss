@@ -1,8 +1,13 @@
 @mixin btn-mixin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
     height: 38px;
     padding: 8px;
     border-radius: var(--radius-m);
-    transition: background var(--transition-m);
+    // transition: background-color var(--transition-m);
     &:hover {
         background-color: var(--base-middle-clr);
     }

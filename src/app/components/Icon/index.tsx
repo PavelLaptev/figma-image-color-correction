@@ -42,8 +42,7 @@ interface Props {
     name: string
 }
 
-const Button: React.FunctionComponent<Props> = props => {
-    // console.log(props.name)
+const Icon: React.FunctionComponent<Props> = props => {
     return (
         <i
             className={`${props.className} ${styles.icon}`}
@@ -52,6 +51,6 @@ const Button: React.FunctionComponent<Props> = props => {
     )
 }
 
-Button.defaultProps = {} as Partial<Props>
+Icon.defaultProps = {} as Partial<Props>
 
-export default Button
+export default Icon

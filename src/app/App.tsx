@@ -3,6 +3,8 @@ import styles from "./app.module.scss"
 import fx from "../glfx/glfx"
 //
 import { imageToArrayBuffer, calculateAspectRatioFit } from "./utils"
+import Button from "./components/Button"
+import Dropdown from "./components/Dropdown"
 import AdjustSection from "./components/AdjustSection"
 import Tools from "./components/Tools"
 import ControlsContainer from "./components/ControlsContainer"
@@ -28,10 +30,14 @@ const toolsArray = [
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
-    const [currentTool, setCurrentTool] = React.useState(toolsArray[12])
+    const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
+    // Swithers
     const [invertState, setInvertState] = React.useState("Off")
-    const canvasRef = React.useRef(null)
+    const [mirrorState, setMirrorState] = React.useState("Off")
+    const [dottedState, setDottedState] = React.useState("Off")
+    // Ranges
 
+    const canvasRef = React.useRef(null)
     const applyRef = React.useRef(null)
 
     // RANGES REFS
@@ -60,15 +66,10 @@ const App = ({}) => {
     const sharpenStrengthRef = React.useRef(null)
     // vibrance
     const vibranceRef = React.useRef(null)
-    // Invert
-    const invertRef = React.useRef(null)
-    // Mirror
-    const mirrorRef = React.useRef(null)
     // noise
     const noiseRef = React.useRef(null)
     const noiseToneRef = React.useRef(null)
     // Dotted
-    const dottInitRef = React.useRef(null)
     const dottAngleRef = React.useRef(null)
     const dottSizeRef = React.useRef(null)
 
@@ -89,11 +90,8 @@ const App = ({}) => {
         sharpenRadiusRef,
         sharpenStrengthRef,
         vibranceRef,
-        // invertRef,
-        // mirrorRef,
         noiseRef,
         noiseToneRef,
-        // dottInitRef,
         dottAngleRef,
         dottSizeRef,
     ]
@@ -139,21 +137,28 @@ const App = ({}) => {
                 )
                 .vibrance(vibranceRef.current.value / 100)
                 .invertColor(invertState)
-                // .mirror(mirrorRef.current.checked)
+                .mirror(mirrorState)
                 .noise(
                     Number(noiseRef.current.value) / 100,
                     Number(noiseToneRef.current.value) / 100
                 )
-                // .dotScreen(
-                //     dottInitRef.current.checked,
-                //     0,
-                //     0.5,
-                //     Number(dottAngleRef.current.value),
-                //     Number(dottSizeRef.current.value)
-                // )
+                .dotScreen(
+                    dottedState,
+                    0,
+                    0.5,
+                    Number(dottAngleRef.current.value),
+                    Number(dottSizeRef.current.value)
+                )
+                .colorHalftone(
+                    dottedState,
+                    0,
+                    0.5,
+                    Number(dottAngleRef.current.value),
+                    Number(dottSizeRef.current.value)
+                )
                 .update()
 
-            console.log(invertRef.current.getAttribute("data-label"))
+            // console.log(mirrorState)
         }
 
         const drawCanvas = () => {
@@ -225,6 +230,8 @@ const App = ({}) => {
             })
         }
 
+        applyRef.current.addEventListener("click", applyResults)
+
         return () => {
             applyRef.current.removeEventListener("click", applyResults)
 
@@ -232,7 +239,7 @@ const App = ({}) => {
                 i.current.removeEventListener("change", drawCanvas)
             })
         }
-    }, [imageData, invertState])
+    }, [imageData, invertState, mirrorState, dottedState])
 
     // RETURN
     return (
@@ -401,7 +408,7 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Switcher
-                        reference={invertRef}
+                        // reference={invertRef}
                         onChange={e => {
                             setInvertState(e.target.getAttribute("data-label"))
                         }}
@@ -414,7 +421,12 @@ const App = ({}) => {
                 show={currentTool === toolsArray[10] ? true : false}
             >
                 <ControlsContainer>
-                    <Switcher reference={mirrorRef} />
+                    <Switcher
+                        // reference={mirrorRef}
+                        onChange={e => {
+                            setMirrorState(e.target.getAttribute("data-label"))
+                        }}
+                    />
                 </ControlsContainer>
             </AdjustSection>
 
@@ -445,7 +457,11 @@ const App = ({}) => {
                 <ControlsContainer>
                     <ControlsContainer height={"32px"} margin={"8px"}>
                         <Switcher
-                            reference={dottInitRef}
+                            onChange={e => {
+                                setDottedState(
+                                    e.target.getAttribute("data-label")
+                                )
+                            }}
                             labels={["Off", "Dotted", "Halftone"]}
                         />
                     </ControlsContainer>
@@ -474,8 +490,18 @@ const App = ({}) => {
                 onChange={e => setCurrentTool(e.target.value)}
             />
 
-            <button ref={applyRef}>apply changes</button>
-            <button>save settings</button>
+            <div className={styles.generalActions}>
+                <Button
+                    text={"Apply"}
+                    className={styles.applyButton}
+                    reference={applyRef}
+                />
+                <Dropdown icon={"settings"}>
+                    <Button text={"Save preset"} />
+                    <Button text={"Load preset"} />
+                    <Button text={"Reset all"} />
+                </Dropdown>
+            </div>
         </section>
     )
 }

@@ -4,7 +4,6 @@
     padding: 24px;
     width: 100%;
     height: 100%;
-    // background-color: var(--base-clr);
 }
 
 .canvasWrap {
@@ -37,4 +36,13 @@
 
 .canvas {
     margin: auto;
+}
+
+.generalActions {
+    display: flex;
+}
+
+.applyButton {
+    flex: 1;
+    margin-right: 8px;
 }

@@ -14,18 +14,10 @@ const Switcher: React.FunctionComponent<Props> = props => {
     const [thumbOffset, setThumbOffset] = React.useState(0)
 
     const handleChange = e => {
-        // console.log(e.target)
-        // e.preventDefault()
         setSelectedRadio(e.target.getAttribute("data-label"))
         setThumbOffset(e.target.offsetLeft)
         props.onChange(e)
     }
-
-    // const handleFormChange = e => {
-    //     // console.log(e.currentTarget.getAttribute("data-label"))
-    //     setSelectedRadio(e.target.value)
-    //     console.log(e.target.value)
-    // }
 
     let radioButtons = props.labels.map((item, i) => {
         return (
@@ -38,13 +30,6 @@ const Switcher: React.FunctionComponent<Props> = props => {
                 <label className={styles.label} htmlFor={props.labels[i]}>
                     {item}
                 </label>
-                <input
-                    className={styles.radio}
-                    id={props.labels[i]}
-                    type="radio"
-                    checked={selectedRadio === props.labels[i] ? true : false}
-                    onChange={() => {}}
-                />
             </div>
         )
     })

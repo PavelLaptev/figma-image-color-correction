@@ -2114,12 +2114,13 @@ var fx = (function() {
      * @param angle   The rotation of the pattern in radians.
      * @param size    The diameter of a dot in pixels.
      */
-    function colorHalftone(centerX, centerY, angle, size) {
-        gl.colorHalftone =
-            gl.colorHalftone ||
-            new Shader(
-                null,
-                "\
+    function colorHalftone(init, centerX, centerY, angle, size) {
+        if (init.toLowerCase() === "halftone") {
+            gl.colorHalftone =
+                gl.colorHalftone ||
+                new Shader(
+                    null,
+                    "\
           uniform sampler2D texture;\
           uniform vec2 center;\
           uniform float angle;\
@@ -2147,15 +2148,17 @@ var fx = (function() {
               gl_FragColor = vec4(1.0 - cmy - k, color.a);\
           }\
       "
-            )
+                )
 
-        simpleShader.call(this, gl.colorHalftone, {
-            center: [centerX, centerY],
-            angle: angle,
-            scale: Math.PI / size,
-            texSize: [this.width, this.height],
-        })
+            simpleShader.call(this, gl.colorHalftone, {
+                center: [centerX, centerY],
+                angle: angle,
+                scale: Math.PI / size,
+                texSize: [this.width, this.height],
+            })
 
+            return this
+        }
         return this
     }
 
@@ -2170,7 +2173,7 @@ var fx = (function() {
      * @param size    The diameter of a dot in pixels.
      */
     function dotScreen(init, centerX, centerY, angle, size) {
-        if (init) {
+        if (init.toLowerCase() === "dotted") {
             gl.dotScreen =
                 gl.dotScreen ||
                 new Shader(
@@ -2493,7 +2496,7 @@ var fx = (function() {
 
     function invertColor(apply) {
         // console.log(apply)
-        if (apply.toLowerCase() == "on") {
+        if (apply.toLowerCase() === "on") {
             gl.invertColor =
                 gl.invertColor ||
                 new Shader(
@@ -2521,7 +2524,7 @@ var fx = (function() {
      * @description      mirror rhe image horizontaly
      */
     function mirror(apply) {
-        if (apply) {
+        if (apply.toLowerCase() === "on") {
             gl.mirror =
                 gl.mirror ||
                 new Shader(
