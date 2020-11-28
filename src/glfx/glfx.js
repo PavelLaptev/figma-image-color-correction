@@ -2492,7 +2492,8 @@ var fx = (function() {
     */
 
     function invertColor(apply) {
-        if (apply) {
+        // console.log(apply)
+        if (apply.toLowerCase() == "on") {
             gl.invertColor =
                 gl.invertColor ||
                 new Shader(

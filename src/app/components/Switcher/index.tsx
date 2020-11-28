@@ -2,42 +2,68 @@ import * as React from "react"
 import styles from "./styles.module.scss"
 
 interface Props {
+    id?: string
     labels?: Array<string>
     switch?: boolean
-    reference?: React.Ref<HTMLInputElement>
-    onClick?(event: React.FormEvent<HTMLInputElement>): void
+    reference?: React.Ref<HTMLFormElement>
+    onChange?: (e) => void
 }
 
 const Switcher: React.FunctionComponent<Props> = props => {
-    const [switchVal, setswitchVal] = React.useState(props.switch)
+    const [selectedRadio, setSelectedRadio] = React.useState(props.labels[0])
+    const [thumbOffset, setThumbOffset] = React.useState(0)
 
-    const handleChange = () => {
-        setswitchVal(!switchVal)
+    const handleChange = e => {
+        // console.log(e.target)
+        // e.preventDefault()
+        setSelectedRadio(e.target.getAttribute("data-label"))
+        setThumbOffset(e.target.offsetLeft)
+        props.onChange(e)
     }
 
-    return (
-        <div className={styles.wrap} data-switched={switchVal}>
-            <input
-                type="checkbox"
-                className={`${styles.checkbox}`}
-                ref={props.reference}
-                onChange={handleChange}
-                checked={switchVal}
-            />
-            <div className={styles.labels}>
-                <div className={styles.label}>
-                    <span>{props.labels[0]}</span>
-                </div>
-                <div className={styles.label}>
-                    <span>{props.labels[1]}</span>
-                </div>
-            </div>
+    // const handleFormChange = e => {
+    //     // console.log(e.currentTarget.getAttribute("data-label"))
+    //     setSelectedRadio(e.target.value)
+    //     console.log(e.target.value)
+    // }
+
+    let radioButtons = props.labels.map((item, i) => {
+        return (
             <div
-                className={`${styles.thumb} ${
-                    !switchVal ? styles.active : null
-                }`}
-            ></div>
-        </div>
+                className={styles.item}
+                key={item}
+                onClick={handleChange}
+                data-label={props.labels[i]}
+            >
+                <label className={styles.label} htmlFor={props.labels[i]}>
+                    {item}
+                </label>
+                <input
+                    className={styles.radio}
+                    id={props.labels[i]}
+                    type="radio"
+                    checked={selectedRadio === props.labels[i] ? true : false}
+                    onChange={() => {}}
+                />
+            </div>
+        )
+    })
+
+    return (
+        <form
+            ref={props.reference}
+            className={styles.wrap}
+            data-label={selectedRadio}
+        >
+            {radioButtons}
+            <div
+                className={styles.thumb}
+                style={{
+                    width: `${100 / props.labels.length}%`,
+                    left: `${thumbOffset}px`,
+                }}
+            />
+        </form>
     )
 }
 

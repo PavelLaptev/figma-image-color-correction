@@ -23,13 +23,13 @@ const toolsArray = [
     "mirror",
     "noise",
     "dotted",
-    "halftone",
 ]
 
 // Application
 const App = ({}) => {
     const [imageData, setImageData] = React.useState(null)
     const [currentTool, setCurrentTool] = React.useState(toolsArray[12])
+    const [invertState, setInvertState] = React.useState("Off")
     const canvasRef = React.useRef(null)
 
     const applyRef = React.useRef(null)
@@ -89,11 +89,11 @@ const App = ({}) => {
         sharpenRadiusRef,
         sharpenStrengthRef,
         vibranceRef,
-        invertRef,
-        mirrorRef,
+        // invertRef,
+        // mirrorRef,
         noiseRef,
         noiseToneRef,
-        dottInitRef,
+        // dottInitRef,
         dottAngleRef,
         dottSizeRef,
     ]
@@ -138,20 +138,22 @@ const App = ({}) => {
                     Number(sharpenStrengthRef.current.value)
                 )
                 .vibrance(vibranceRef.current.value / 100)
-                .invertColor(invertRef.current.checked)
-                .mirror(mirrorRef.current.checked)
+                .invertColor(invertState)
+                // .mirror(mirrorRef.current.checked)
                 .noise(
                     Number(noiseRef.current.value) / 100,
                     Number(noiseToneRef.current.value) / 100
                 )
-                .dotScreen(
-                    dottInitRef.current.checked,
-                    0,
-                    0.5,
-                    Number(dottAngleRef.current.value),
-                    Number(dottSizeRef.current.value)
-                )
+                // .dotScreen(
+                //     dottInitRef.current.checked,
+                //     0,
+                //     0.5,
+                //     Number(dottAngleRef.current.value),
+                //     Number(dottSizeRef.current.value)
+                // )
                 .update()
+
+            console.log(invertRef.current.getAttribute("data-label"))
         }
 
         const drawCanvas = () => {
@@ -223,8 +225,6 @@ const App = ({}) => {
             })
         }
 
-        applyRef.current.addEventListener("click", applyResults)
-
         return () => {
             applyRef.current.removeEventListener("click", applyResults)
 
@@ -232,7 +232,7 @@ const App = ({}) => {
                 i.current.removeEventListener("change", drawCanvas)
             })
         }
-    }, [imageData])
+    }, [imageData, invertState])
 
     // RETURN
     return (
@@ -400,7 +400,12 @@ const App = ({}) => {
                 show={currentTool === toolsArray[9] ? true : false}
             >
                 <ControlsContainer>
-                    <Switcher reference={invertRef} />
+                    <Switcher
+                        reference={invertRef}
+                        onChange={e => {
+                            setInvertState(e.target.getAttribute("data-label"))
+                        }}
+                    />
                 </ControlsContainer>
             </AdjustSection>
 
@@ -439,7 +444,10 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <ControlsContainer height={"32px"} margin={"8px"}>
-                        <Switcher reference={dottInitRef} />
+                        <Switcher
+                            reference={dottInitRef}
+                            labels={["Off", "Dotted", "Halftone"]}
+                        />
                     </ControlsContainer>
                     <ControlsContainer
                         height={"calc(100% - 32px)"}
