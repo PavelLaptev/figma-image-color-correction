@@ -1,5 +1,5 @@
 // Show UI
-figma.showUI(__html__, { width: 456, height: 680 })
+figma.showUI(__html__, { width: 456, height: 690 })
 
 const sendFullImage = () => {
     try {
@@ -10,7 +10,7 @@ const sendFullImage = () => {
             .then(res => figma.ui.postMessage({ type: "image", data: res }))
     } catch {
         figma.ui.postMessage({ type: "image", data: null })
-        figma.notify("📌 Select something…", {
+        figma.notify("📌 Select frame with image", {
             timeout: 2000,
         })
     }

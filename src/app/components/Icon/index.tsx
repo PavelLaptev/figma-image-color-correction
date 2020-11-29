@@ -17,6 +17,7 @@ import mirrorSVG from "./svg/mirror.svg"
 import noiseSVG from "./svg/noise.svg"
 import sharpSVG from "./svg/sharp.svg"
 import vibranceSVG from "./svg/vibrance.svg"
+import tintSVG from "./svg/tint.svg"
 
 const icons = {
     "brightnes-contrast": brightnesContrastSVG,
@@ -35,6 +36,7 @@ const icons = {
     noise: noiseSVG,
     sharp: sharpSVG,
     vibrance: vibranceSVG,
+    tint: tintSVG,
 }
 
 interface Props {

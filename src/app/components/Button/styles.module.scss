@@ -6,6 +6,7 @@
 }
 
 .text {
+    user-select: none;
     margin: 0 4px;
     color: var(--primary-clr);
     font-family: "Inter", sans-serif;
@@ -16,5 +17,6 @@
 }
 
 .icon {
+    user-select: none;
     margin: 0 4px;
 }

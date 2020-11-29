@@ -14,14 +14,11 @@ const Dropdown: React.FunctionComponent<Props> = props => {
 
     return (
         <div className={`${props.className} ${styles.wrap}`}>
-            <Button
-                icon={props.icon}
-                onClick={() => setToggle(!toggle)}
-                onBlur={() => setToggle(false)}
-            />
+            <Button icon={props.icon} onClick={() => setToggle(!toggle)} />
             <div
                 style={{ display: toggle ? "flex" : "none" }}
                 className={`${styles.container}`}
+                onClick={() => setToggle(false)}
             >
                 {props.children}
             </div>

@@ -29,6 +29,18 @@
     line-height: 1.1;
 }
 
+.default {
+    // mix-blend-mode: overlay;
+    border-radius: 10px;
+    width: 4px;
+    transform: translate(-2px, -50%);
+    height: 4px;
+    background-color: var(--primary-clr);
+    position: absolute;
+    top: 50%;
+    // opacity: 0.4;
+}
+
 .scale {
     display: flex;
     height: 100%;

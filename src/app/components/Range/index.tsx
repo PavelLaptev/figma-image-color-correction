@@ -9,12 +9,11 @@ interface Props {
     min?: number
     max?: number
     step?: number
-    reference?: React.Ref<HTMLInputElement>
+    // ref?: React.Ref<HTMLInputElement>
     color?: string
-    onChange?(event: React.FormEvent<HTMLInputElement>): void
 }
 
-const Range: React.FunctionComponent<Props> = props => {
+const Range = React.forwardRef((props: Props, ref) => {
     const [val, setVal] = React.useState(props.value)
 
     const handleChange = e => {
@@ -28,12 +27,34 @@ const Range: React.FunctionComponent<Props> = props => {
                 id={props.id}
                 min={props.min}
                 max={props.max}
-                ref={props.reference}
+                ref={ref as any}
                 value={val}
                 step={props.step}
                 onChange={handleChange}
             />
             <span className={styles.label}>{props.label}</span>
+            <div
+                className={styles.default}
+                style={{
+                    left: `${rangeInterpolation(
+                        props.min,
+                        props.max,
+                        1,
+                        100,
+                        props.value
+                    )}%`,
+                    display:
+                        rangeInterpolation(
+                            props.min,
+                            props.max,
+                            1,
+                            100,
+                            props.value
+                        ) <= 1
+                            ? "none"
+                            : "block",
+                }}
+            />
             <div
                 className={styles.scale}
                 style={{
@@ -46,26 +67,23 @@ const Range: React.FunctionComponent<Props> = props => {
                     )}%`,
                     backgroundImage: `linear-gradient(
                         270deg,
-                        #${props.color} 14.35%,
-                        #${props.color}00 104.48%
+                        ${props.color} 14%,
+                        var(--base-middle-clr) 100%
                     )`,
                 }}
             />
         </div>
     )
-}
+})
 
 Range.defaultProps = {
     min: 0,
     max: 100,
-    reference: null,
+    // reference: null,
     value: 50,
     step: 1,
     label: null,
-    color: "7748fc",
+    color: "var(--secondary-clr)",
 } as Partial<Props>
 
 export default Range
-
-// TODO
-// Add a color variable

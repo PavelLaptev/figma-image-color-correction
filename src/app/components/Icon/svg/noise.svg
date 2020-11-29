@@ -71,4 +71,5 @@
 <path d="M6.00001 11.3333H4.66667V10H6.00001V11.3333Z" fill="white"/>
 <path d="M12.6667 12.6667H11.3333V11.3333H12.6667V12.6667Z" fill="white"/>
 <path d="M18 10H16.6667L16.6667 8.66666L18 8.66667L18 10Z" fill="white"/>
+<rect x="3" y="3" width="18" height="18" stroke="white" stroke-width="2"/>
 </svg>

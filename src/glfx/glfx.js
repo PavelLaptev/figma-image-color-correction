@@ -1086,7 +1086,7 @@ var fx = (function() {
             r: r,
             g: g,
             b: b,
-            a: alpha,
+            a: alpha / 1000 / 26,
         })
 
         return this
