@@ -9,15 +9,33 @@ interface Props {
     min?: number
     max?: number
     step?: number
-    // ref?: React.Ref<HTMLInputElement>
     color?: string
+    onMouseUp?: (e) => void
 }
 
-const Range = React.forwardRef((props: Props, ref) => {
+interface RefObject {
+    reset: (val) => void
+    getValue: () => void
+}
+
+const Range = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
     const [val, setVal] = React.useState(props.value)
+
+    React.useImperativeHandle(ref, () => ({
+        reset(val) {
+            setVal(val)
+        },
+        getValue() {
+            return val
+        },
+    }))
 
     const handleChange = e => {
         setVal(e.target.value)
+    }
+
+    const handleMouseUp = e => {
+        props.onMouseUp(e)
     }
 
     return (
@@ -31,6 +49,7 @@ const Range = React.forwardRef((props: Props, ref) => {
                 value={val}
                 step={props.step}
                 onChange={handleChange}
+                onMouseUp={handleMouseUp}
             />
             <span className={styles.label}>{props.label}</span>
             <div
@@ -79,7 +98,6 @@ const Range = React.forwardRef((props: Props, ref) => {
 Range.defaultProps = {
     min: 0,
     max: 100,
-    // reference: null,
     value: 50,
     step: 1,
     label: null,

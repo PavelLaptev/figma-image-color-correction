@@ -1,6 +1,6 @@
 {
-    "name": "Image Color Corrector",
-    "id": "905806377146336127",
+    "name": "Image Editor",
+    "id": "914972720109480252",
     "api": "1.0.0",
     "main": "dist/code.js",
     "ui": "dist/ui.html"

@@ -6,9 +6,23 @@ interface Props {
     color?: string
 }
 
+interface RefObject {
+    reset: () => void
+    getValue: () => void
+}
+
 const ColorPicker = React.forwardRef(
-    (props: Props, ref?: React.Ref<HTMLInputElement>) => {
+    (props: Props, ref: React.Ref<RefObject>) => {
         const [val, setVal] = React.useState(props.color)
+
+        React.useImperativeHandle(ref, () => ({
+            reset() {
+                setVal(props.color)
+            },
+            getValue() {
+                return val
+            },
+        }))
 
         const handleChange = e => {
             setVal(e.target.value)
@@ -22,7 +36,7 @@ const ColorPicker = React.forwardRef(
                 <input
                     type="color"
                     className={styles.picker}
-                    ref={ref}
+                    ref={ref as any}
                     value={val}
                     onChange={handleChange}
                 />
@@ -32,7 +46,7 @@ const ColorPicker = React.forwardRef(
 )
 
 ColorPicker.defaultProps = {
-    color: "#fc4848",
+    color: "#ca4040",
 } as Partial<Props>
 
 export default ColorPicker

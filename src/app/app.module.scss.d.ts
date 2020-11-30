@@ -6,6 +6,7 @@ interface CssExports {
     canvas: string
     canvasWrap: string
     generalActions: string
+    statusText: string
 }
 export const cssExports: CssExports
 export default cssExports

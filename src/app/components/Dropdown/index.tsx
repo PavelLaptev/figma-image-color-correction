@@ -20,7 +20,20 @@ const Dropdown: React.FunctionComponent<Props> = props => {
                 className={`${styles.container}`}
                 onClick={() => setToggle(false)}
             >
-                {props.children}
+                <div className={`${styles.childContainer}`}>
+                    <Button
+                        text={"Support Plugin"}
+                        onClick={() =>
+                            parent.postMessage(
+                                { pluginMessage: { type: "donate-link" } },
+                                "*"
+                            )
+                        }
+                    />
+                </div>
+                <div className={`${styles.childContainer}`}>
+                    {props.children}
+                </div>
             </div>
         </div>
     )

@@ -4,6 +4,7 @@ import fx from "../glfx/glfx"
 //
 import { imageToArrayBuffer, calculateAspectRatioFit, hexToRgb } from "./utils"
 import Button from "./components/Button"
+import Dropdown from "./components/Dropdown"
 import AdjustSection from "./components/AdjustSection"
 import Tools from "./components/Tools"
 import ControlsContainer from "./components/ControlsContainer"
@@ -70,20 +71,29 @@ const toolsArray = [
 
 // Application
 const App = ({}) => {
+    //////////////////////////////////////////////////////////////
+    /////////////////////////// STATES ///////////////////////////
+    //////////////////////////////////////////////////////////////
     const [imageData, setImageData] = React.useState(null)
     const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
     // Swithers
     const [invertState, setInvertState] = React.useState("Off")
     const [mirrorState, setMirrorState] = React.useState("Off")
     const [dottedState, setDottedState] = React.useState("Off")
+    // Ranges
+    const [brState, setBrState] = React.useState(initialSettings.brightness)
+    const [contrastState, setContrastState] = React.useState(
+        initialSettings.brightness
+    )
 
+    //////////////////////////////////////////////////////////////
+    //////////////////////////// REFS ////////////////////////////
+    //////////////////////////////////////////////////////////////
     // General Refs
     const canvasRef = React.useRef(null)
     const applyRef = React.useRef(null)
-
-    // RANGES REFS
     // Brightness and contrast
-    const BrightnessRef = React.useRef(null)
+    const BrRef = React.useRef(null)
     const ContrastRef = React.useRef(null)
     // HUE and Saturation
     const hueRef = React.useRef(null)
@@ -100,7 +110,7 @@ const App = ({}) => {
     const blurRef = React.useRef(null)
     // Lens Blur
     const radiusLensBlurRef = React.useRef(null)
-    const brightnessLensBlurRef = React.useRef(null)
+    const brLensBlurRef = React.useRef(null)
     const angleLensBlurRef = React.useRef(null)
     // Sharpen
     const sharpenRadiusRef = React.useRef(null)
@@ -117,8 +127,8 @@ const App = ({}) => {
     const tintRef = React.useRef(null)
     const tintAlphaRef = React.useRef(null)
 
-    const refsRangesArray = [
-        BrightnessRef,
+    const controlsArray = [
+        BrRef,
         ContrastRef,
         hueRef,
         saturationRef,
@@ -129,7 +139,7 @@ const App = ({}) => {
         gammaRef,
         blurRef,
         radiusLensBlurRef,
-        brightnessLensBlurRef,
+        brLensBlurRef,
         angleLensBlurRef,
         sharpenRadiusRef,
         sharpenStrengthRef,
@@ -137,11 +147,13 @@ const App = ({}) => {
         noiseRef,
         noiseToneRef,
         dottAngleRef,
-        dottSizeRef,
         tintRef,
         tintAlphaRef,
     ]
 
+    //////////////////////////////////////////////////////////////
+    ///////////////////////// USE EFFECT /////////////////////////
+    //////////////////////////////////////////////////////////////
     React.useEffect(() => {
         let c = canvasRef.current
         let ctx = c.getContext("2d")
@@ -157,57 +169,57 @@ const App = ({}) => {
             canvas
                 .draw(canvas.texture(image))
                 .brightnessContrast(
-                    Number(BrightnessRef.current.value / 100),
-                    Number(ContrastRef.current.value / 100)
+                    Number(brState / 140),
+                    Number(contrastState / 140)
                 )
-                .hueSaturation(
-                    Number(hueRef.current.value / 100),
-                    Number(saturationRef.current.value / 100)
-                )
-                .adjustchannels(
-                    redChannelRef.current.value / 100,
-                    greenChannelRef.current.value / 100,
-                    blueChannelRef.current.value / 100
-                )
-                .exposure(exposureRef.current.value / 100)
-                .gamma(gammaRef.current.value / 100)
-                .triangleBlur(Number(blurRef.current.value))
-                .lensBlur(
-                    Number(radiusLensBlurRef.current.value),
-                    Number(brightnessLensBlurRef.current.value / 10),
-                    Number(angleLensBlurRef.current.value / 100)
-                )
-                .unsharpMask(
-                    Number(sharpenRadiusRef.current.value),
-                    Number(sharpenStrengthRef.current.value)
-                )
-                .vibrance(vibranceRef.current.value / 100)
-                .invertColor(invertState)
-                .mirror(mirrorState)
-                .noise(
-                    Number(noiseRef.current.value) / 100,
-                    Number(noiseToneRef.current.value) / 100
-                )
-                .dotScreen(
-                    dottedState,
-                    0,
-                    0.5,
-                    Number(dottAngleRef.current.value),
-                    Number(dottSizeRef.current.value)
-                )
-                .colorHalftone(
-                    dottedState,
-                    0,
-                    0.5,
-                    Number(dottAngleRef.current.value),
-                    Number(dottSizeRef.current.value)
-                )
-                .color(
-                    Number(tintAlphaRef.current.value),
-                    hexToRgb(tintRef.current.value).r,
-                    hexToRgb(tintRef.current.value).g,
-                    hexToRgb(tintRef.current.value).b
-                )
+                // .hueSaturation(
+                //     Number(hueRef.current.value / 100),
+                //     Number(saturationRef.current.value / 100)
+                // )
+                // .adjustchannels(
+                //     redChannelRef.current.value / 100,
+                //     greenChannelRef.current.value / 100,
+                //     blueChannelRef.current.value / 100
+                // )
+                // .exposure(exposureRef.current.value / 100)
+                // .gamma(gammaRef.current.value / 100)
+                // .triangleBlur(Number(blurRef.current.value))
+                // .lensBlur(
+                //     Number(radiusLensBlurRef.current.value),
+                //     Number(brLensBlurRef.current.value / 10),
+                //     Number(angleLensBlurRef.current.value / 100)
+                // )
+                // .unsharpMask(
+                //     Number(sharpenRadiusRef.current.value),
+                //     Number(sharpenStrengthRef.current.value)
+                // )
+                // .vibrance(vibranceRef.current.value / 100)
+                // .invertColor(invertState)
+                // .mirror(mirrorState)
+                // .noise(
+                //     Number(noiseRef.current.value) / 100,
+                //     Number(noiseToneRef.current.value) / 100
+                // )
+                // .dotScreen(
+                //     dottedState,
+                //     0,
+                //     0.5,
+                //     Number(dottAngleRef.current.value),
+                //     Number(dottSizeRef.current.value)
+                // )
+                // .colorHalftone(
+                //     dottedState,
+                //     0,
+                //     0.5,
+                //     Number(dottAngleRef.current.value),
+                //     Number(dottSizeRef.current.value)
+                // )
+                // .color(
+                //     Number(tintAlphaRef.current.value),
+                //     hexToRgb(tintRef.current.value).r,
+                //     hexToRgb(tintRef.current.value).g,
+                //     hexToRgb(tintRef.current.value).b
+                // )
                 .update()
         }
 
@@ -248,11 +260,9 @@ const App = ({}) => {
 
         image.onload = () => {
             drawCanvas()
-            refsRangesArray.forEach(i => {
-                i.current.addEventListener("change", drawCanvas)
-            })
         }
 
+        // catch the message
         onmessage = event => {
             let imgData = event.data.pluginMessage.data
 
@@ -284,18 +294,27 @@ const App = ({}) => {
 
         return () => {
             applyRef.current.removeEventListener("click", applyResults)
-
-            refsRangesArray.forEach(i => {
-                i.current.removeEventListener("change", drawCanvas)
-            })
         }
-    }, [imageData, invertState, mirrorState, dottedState])
+    }, [
+        imageData,
+        invertState,
+        mirrorState,
+        dottedState,
+        brState,
+        contrastState,
+    ])
 
     // RETURN
     return (
         <section className={styles.app}>
             <div className={styles.canvasWrap}>
                 <canvas ref={canvasRef} className={styles.canvas} />
+                <p
+                    className={styles.statusText}
+                    style={{ display: !imageData ? "block" : "none" }}
+                >
+                    Select frame with image
+                </p>
             </div>
 
             <AdjustSection
@@ -305,10 +324,13 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="Brightness"
-                        ref={BrightnessRef}
+                        ref={BrRef}
                         value={initialSettings.brightness}
                         min={-100}
                         max={100}
+                        onMouseUp={() => {
+                            setBrState(BrRef.current.getValue())
+                        }}
                     />
                     <Range
                         label="Contrast"
@@ -316,6 +338,9 @@ const App = ({}) => {
                         value={initialSettings.contrast}
                         min={-100}
                         max={100}
+                        onMouseUp={() => {
+                            setContrastState(ContrastRef.current.getValue())
+                        }}
                     />
                 </ControlsContainer>
             </AdjustSection>
@@ -423,7 +448,7 @@ const App = ({}) => {
                     />
                     <Range
                         label="Brightness"
-                        ref={brightnessLensBlurRef}
+                        ref={brLensBlurRef}
                         value={initialSettings.lensblur.brightness}
                         max={100}
                     />
@@ -586,6 +611,21 @@ const App = ({}) => {
                     className={styles.applyButton}
                     reference={applyRef}
                 />
+                <Dropdown icon={"settings"}>
+                    <Button text={"Save preset"} />
+                    <Button text={"Load preset"} />
+                    <Button
+                        text={"Reset all"}
+                        onClick={() => {
+                            setBrState(initialSettings.brightness)
+                            setContrastState(initialSettings.contrast)
+                            controlsArray.map(item => {
+                                console.log(item)
+                                item.current.reset(0)
+                            })
+                        }}
+                    />
+                </Dropdown>
             </div>
         </section>
     )
