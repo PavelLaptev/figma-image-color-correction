@@ -42,7 +42,7 @@ const initialSettings = {
         tone: 50,
     },
     dotten: {
-        type: "off",
+        mode: "off",
         angle: 1,
         size: 10,
     },
@@ -72,84 +72,23 @@ const toolsArray = [
 // Application
 const App = ({}) => {
     //////////////////////////////////////////////////////////////
+    //////////////////////////// REFS ////////////////////////////
+    //////////////////////////////////////////////////////////////
+    const canvasRef = React.useRef(null)
+    const applyRef = React.useRef(null)
+
+    let refs = {}
+    Object.keys(initialSettings).map(item => {
+        return (refs[item] = React.useRef(null))
+    })
+
+    //////////////////////////////////////////////////////////////
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
     const [imageData, setImageData] = React.useState(null)
     const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
-    // Swithers
-    const [invertState, setInvertState] = React.useState("Off")
-    const [mirrorState, setMirrorState] = React.useState("Off")
-    const [dottedState, setDottedState] = React.useState("Off")
-    // Ranges
-    const [brState, setBrState] = React.useState(initialSettings.brightness)
-    const [contrastState, setContrastState] = React.useState(
-        initialSettings.brightness
-    )
 
-    //////////////////////////////////////////////////////////////
-    //////////////////////////// REFS ////////////////////////////
-    //////////////////////////////////////////////////////////////
-    // General Refs
-    const canvasRef = React.useRef(null)
-    const applyRef = React.useRef(null)
-    // Brightness and contrast
-    const BrRef = React.useRef(null)
-    const ContrastRef = React.useRef(null)
-    // HUE and Saturation
-    const hueRef = React.useRef(null)
-    const saturationRef = React.useRef(null)
-    // Channels
-    const redChannelRef = React.useRef(null)
-    const greenChannelRef = React.useRef(null)
-    const blueChannelRef = React.useRef(null)
-    // Exposure
-    const exposureRef = React.useRef(null)
-    // Gamma
-    const gammaRef = React.useRef(null)
-    // Blur
-    const blurRef = React.useRef(null)
-    // Lens Blur
-    const radiusLensBlurRef = React.useRef(null)
-    const brLensBlurRef = React.useRef(null)
-    const angleLensBlurRef = React.useRef(null)
-    // Sharpen
-    const sharpenRadiusRef = React.useRef(null)
-    const sharpenStrengthRef = React.useRef(null)
-    // vibrance
-    const vibranceRef = React.useRef(null)
-    // noise
-    const noiseRef = React.useRef(null)
-    const noiseToneRef = React.useRef(null)
-    // Dotted
-    const dottAngleRef = React.useRef(null)
-    const dottSizeRef = React.useRef(null)
-    // Tint
-    const tintRef = React.useRef(null)
-    const tintAlphaRef = React.useRef(null)
-
-    const controlsArray = [
-        BrRef,
-        ContrastRef,
-        hueRef,
-        saturationRef,
-        redChannelRef,
-        greenChannelRef,
-        blueChannelRef,
-        exposureRef,
-        gammaRef,
-        blurRef,
-        radiusLensBlurRef,
-        brLensBlurRef,
-        angleLensBlurRef,
-        sharpenRadiusRef,
-        sharpenStrengthRef,
-        vibranceRef,
-        noiseRef,
-        noiseToneRef,
-        dottAngleRef,
-        tintRef,
-        tintAlphaRef,
-    ]
+    const [states, setStates] = React.useState(initialSettings)
 
     //////////////////////////////////////////////////////////////
     ///////////////////////// USE EFFECT /////////////////////////
@@ -169,20 +108,20 @@ const App = ({}) => {
             canvas
                 .draw(canvas.texture(image))
                 .brightnessContrast(
-                    Number(brState / 140),
-                    Number(contrastState / 140)
+                    Number(states.brightness / 140),
+                    Number(states.contrast / 140)
                 )
                 // .hueSaturation(
-                //     Number(hueRef.current.value / 100),
-                //     Number(saturationRef.current.value / 100)
+                //     Number(refs.hue.current.value / 100),
+                //     Number(refs.saturation.current.value / 100)
                 // )
                 // .adjustchannels(
-                //     redChannelRef.current.value / 100,
-                //     greenChannelRef.current.value / 100,
-                //     blueChannelRef.current.value / 100
+                //     refs.redChannelRef.current.value / 100,
+                //     refs.greenChannelRef.current.value / 100,
+                //     refs.blueChannelRef.current.value / 100
                 // )
-                // .exposure(exposureRef.current.value / 100)
-                // .gamma(gammaRef.current.value / 100)
+                // .exposure(refs.exposureRef.current.value / 100)
+                // .gamma(refs.gammaRef.current.value / 100)
                 // .triangleBlur(Number(blurRef.current.value))
                 // .lensBlur(
                 //     Number(radiusLensBlurRef.current.value),
@@ -297,11 +236,11 @@ const App = ({}) => {
         }
     }, [
         imageData,
-        invertState,
-        mirrorState,
-        dottedState,
-        brState,
-        contrastState,
+        states.invert,
+        states.mirror,
+        states.dotten.mode,
+        states.brightness,
+        states.contrast,
     ])
 
     // RETURN
@@ -316,7 +255,7 @@ const App = ({}) => {
                     Select frame with image
                 </p>
             </div>
-
+            {/* br.ref.current.getValue() */}
             <AdjustSection
                 title="Brightness and contrast"
                 show={currentTool === toolsArray[0] ? true : false}
@@ -324,23 +263,30 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="Brightness"
-                        ref={BrRef}
+                        ref={refs.brightness}
                         value={initialSettings.brightness}
                         min={-100}
                         max={100}
                         onMouseUp={() => {
-                            setBrState(BrRef.current.getValue())
+                            setStates(p => {
+                                return {
+                                    ...p,
+                                    brightness: refs.brightness.current.getValue(),
+                                }
+                            })
                         }}
                     />
                     <Range
                         label="Contrast"
-                        ref={ContrastRef}
+                        ref={refs.contrast}
                         value={initialSettings.contrast}
                         min={-100}
                         max={100}
-                        onMouseUp={() => {
-                            setContrastState(ContrastRef.current.getValue())
-                        }}
+                        // onMouseUp={() => {
+                        //     setContrastState(
+                        //         refs.contrast.current.getValue()
+                        //     )
+                        // }}
                     />
                 </ControlsContainer>
             </AdjustSection>
@@ -352,14 +298,14 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="HUE"
-                        ref={hueRef}
+                        ref={refs.hue}
                         value={initialSettings.hue}
                         min={-99}
                         max={99}
                     />
                     <Range
                         label="Saturation"
-                        ref={saturationRef}
+                        ref={refs.saturation}
                         value={initialSettings.saturation}
                         min={-99}
                         max={99}
@@ -373,21 +319,21 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Range
-                        ref={redChannelRef}
+                        ref={refs.redChannelRef}
                         value={initialSettings.channels.r}
                         min={-100}
                         max={100}
                         color="#FC4853"
                     />
                     <Range
-                        ref={greenChannelRef}
+                        ref={refs.greenChannelRef}
                         value={initialSettings.channels.g}
                         min={-99}
                         max={99}
                         color="#63F39D"
                     />
                     <Range
-                        ref={blueChannelRef}
+                        ref={refs.blueChannelRef}
                         value={initialSettings.channels.b}
                         min={-99}
                         max={99}
@@ -402,7 +348,7 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Range
-                        ref={exposureRef}
+                        ref={refs.exposureRef}
                         value={initialSettings.exposure}
                         max={100}
                     />
@@ -415,7 +361,7 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Range
-                        ref={gammaRef}
+                        ref={refs.gammaRef}
                         value={initialSettings.gamma}
                         max={200}
                     />
@@ -428,7 +374,7 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Range
-                        ref={blurRef}
+                        ref={refs.blurRef}
                         value={initialSettings.blur}
                         max={100}
                     />
@@ -442,19 +388,19 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="Radius"
-                        ref={radiusLensBlurRef}
+                        ref={refs.radiusLensBlurRef}
                         value={initialSettings.lensblur.radius}
                         max={200}
                     />
                     <Range
                         label="Brightness"
-                        ref={brLensBlurRef}
+                        ref={refs.brLensBlurRef}
                         value={initialSettings.lensblur.brightness}
                         max={100}
                     />
                     <Range
                         label="Angle"
-                        ref={angleLensBlurRef}
+                        ref={refs.angleLensBlurRef}
                         value={initialSettings.lensblur.angle}
                         max={300}
                     />
@@ -468,13 +414,13 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="Radius"
-                        ref={sharpenRadiusRef}
+                        ref={refs.sharpenRadiusRef}
                         value={initialSettings.sharpen.radius}
                         max={10}
                     />
                     <Range
                         label="Strength"
-                        ref={sharpenStrengthRef}
+                        ref={refs.sharpenStrengthRef}
                         value={initialSettings.sharpen.strength}
                         max={10}
                     />
@@ -487,7 +433,7 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Range
-                        ref={vibranceRef}
+                        ref={refs.vibranceRef}
                         value={initialSettings.vibrance}
                         max={100}
                     />
@@ -500,9 +446,9 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Switcher
-                        onChange={e => {
-                            setInvertState(e.target.getAttribute("data-label"))
-                        }}
+                    // onChange={e => {
+                    //     setInvertState(e.target.getAttribute("data-label"))
+                    // }}
                     />
                 </ControlsContainer>
             </AdjustSection>
@@ -513,9 +459,9 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Switcher
-                        onChange={e => {
-                            setMirrorState(e.target.getAttribute("data-label"))
-                        }}
+                    // onChange={e => {
+                    //     setMirrorState(e.target.getAttribute("data-label"))
+                    // }}
                     />
                 </ControlsContainer>
             </AdjustSection>
@@ -527,13 +473,13 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         label="Strength"
-                        ref={noiseRef}
+                        ref={refs.noiseRef}
                         value={initialSettings.noise.strength}
                         max={100}
                     />
                     <Range
                         label="Tone"
-                        ref={noiseToneRef}
+                        ref={refs.noiseToneRef}
                         value={initialSettings.noise.tone}
                         max={100}
                     />
@@ -547,11 +493,11 @@ const App = ({}) => {
                 <ControlsContainer>
                     <ControlsContainer height={"32px"} margin={"8px"}>
                         <Switcher
-                            onChange={e => {
-                                setDottedState(
-                                    e.target.getAttribute("data-label")
-                                )
-                            }}
+                            // onChange={e => {
+                            //     setDottedState(
+                            //         e.target.getAttribute("data-label")
+                            //     )
+                            // }}
                             labels={["Off", "Dotted", "Halftone"]}
                         />
                     </ControlsContainer>
@@ -561,13 +507,13 @@ const App = ({}) => {
                     >
                         <Range
                             label="Angle"
-                            ref={dottAngleRef}
+                            ref={refs.dottAngleRef}
                             value={initialSettings.dotten.angle}
                             max={100}
                         />
                         <Range
                             label="Size"
-                            ref={dottSizeRef}
+                            ref={refs.dottSizeRef}
                             value={initialSettings.dotten.size}
                             max={100}
                         />
@@ -583,7 +529,7 @@ const App = ({}) => {
                     <ControlsContainer height={"60px"} margin={"8px"}>
                         <Colorpicker
                             color={initialSettings.tint.color}
-                            ref={tintRef}
+                            ref={refs.tintRef}
                         />
                     </ControlsContainer>
                     <ControlsContainer
@@ -592,7 +538,7 @@ const App = ({}) => {
                     >
                         <Range
                             label="Strength"
-                            ref={tintAlphaRef}
+                            ref={refs.tintAlphaRef}
                             value={initialSettings.tint.alpha}
                             max={100}
                         />
@@ -602,7 +548,9 @@ const App = ({}) => {
 
             <Tools
                 tools={toolsArray}
-                onChange={e => setCurrentTool(e.target.value)}
+                onChange={e => {
+                    console.log(e.target), setCurrentTool(e.target.value)
+                }}
             />
 
             <div className={styles.generalActions}>
@@ -617,12 +565,8 @@ const App = ({}) => {
                     <Button
                         text={"Reset all"}
                         onClick={() => {
-                            setBrState(initialSettings.brightness)
-                            setContrastState(initialSettings.contrast)
-                            controlsArray.map(item => {
-                                console.log(item)
-                                item.current.reset(0)
-                            })
+                            setStates(initialSettings)
+                            refs.brightness.current.reset(0)
                         }}
                     />
                 </Dropdown>
