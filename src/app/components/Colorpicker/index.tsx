@@ -8,7 +8,6 @@ interface Props {
 
 interface RefObject {
     reset: () => void
-    getValue: () => void
 }
 
 const ColorPicker = React.forwardRef(
@@ -18,9 +17,6 @@ const ColorPicker = React.forwardRef(
         React.useImperativeHandle(ref, () => ({
             reset() {
                 setVal(props.color)
-            },
-            getValue() {
-                return val
             },
         }))
 

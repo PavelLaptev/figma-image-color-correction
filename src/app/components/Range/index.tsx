@@ -15,7 +15,6 @@ interface Props {
 
 interface RefObject {
     reset: (val) => void
-    getValue: () => void
 }
 
 const Range = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
@@ -24,9 +23,6 @@ const Range = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
     React.useImperativeHandle(ref, () => ({
         reset(val) {
             setVal(val)
-        },
-        getValue() {
-            return val
         },
     }))
 
