@@ -2,7 +2,7 @@ import * as React from "react"
 import styles from "./app.module.scss"
 import fx from "../glfx/glfx"
 //
-import { imageToArrayBuffer, calculateAspectRatioFit, hexToRgb } from "./utils"
+import { imageToArrayBuffer, calculateAspectRatioFit, hsl2rgb } from "./utils"
 import Button from "./components/Button"
 import Dropdown from "./components/Dropdown"
 import AdjustSection from "./components/AdjustSection"
@@ -64,7 +64,7 @@ const initialSettings: settingsTypes = {
     dottetMode: "off",
     dottetAngle: 1,
     dottetSize: 10,
-    tintColor: "#fc4848",
+    tintColor: 0,
     tintAlpha: 0,
 }
 
@@ -102,7 +102,7 @@ const App = ({}) => {
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
     const [imageData, setImageData] = React.useState(null)
-    const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
+    const [currentTool, setCurrentTool] = React.useState(toolsArray[13])
 
     const [states, setStates] = React.useState(initialSettings)
 
@@ -161,10 +161,10 @@ const App = ({}) => {
                     states.dottetSize
                 )
                 .color(
-                    Number(states.tintAlpha),
-                    hexToRgb(states.tintColor).r,
-                    hexToRgb(states.tintColor).g,
-                    hexToRgb(states.tintColor).b
+                    states.tintAlpha / 20,
+                    hsl2rgb(states.tintColor, 100, 50).r,
+                    hsl2rgb(states.tintColor, 100, 50).g,
+                    hsl2rgb(states.tintColor, 100, 50).b
                 )
                 .update()
         }
@@ -600,19 +600,15 @@ const App = ({}) => {
                 show={currentTool === toolsArray[13] ? true : false}
             >
                 <ControlsContainer>
-                    <ControlsContainer height={"60px"} margin={"8px"}>
+                    <ControlsContainer height={"120px"} margin={"8px"}>
                         <Colorpicker
-                            color={initialSettings.tintColor}
                             ref={refs.tintColor}
                             onMouseUp={e => {
-                                setStateOnChange(e, "tintColor", false, "value")
+                                setStateOnChange(e, "tintColor", true)
                             }}
                         />
                     </ControlsContainer>
-                    <ControlsContainer
-                        height={"calc(100% - 60px)"}
-                        margin={"0"}
-                    >
+                    <ControlsContainer margin={"0"}>
                         <Range
                             label="Strength"
                             ref={refs.tintAlpha}
@@ -647,7 +643,6 @@ const App = ({}) => {
                         onClick={() => {
                             setStates(initialSettings)
                             Object.values(refs).map((item, i) => {
-                                // console.log(Object.values(initialSettings)[i])
                                 item.current.reset(
                                     Object.values(initialSettings)[i]
                                 )

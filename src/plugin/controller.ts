@@ -10,7 +10,7 @@ export function openLink(url) {
     )
     setTimeout(() => {
         figma.closePlugin("(♡-_-♡) 𝕿𝖍𝖆𝖓𝖐 𝖞𝖔𝖚, 𝕾𝖊𝖓𝖕𝖆𝖎! ")
-    }, 100)
+    }, 500)
 }
 
 const sendFullImage = () => {

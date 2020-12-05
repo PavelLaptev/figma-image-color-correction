@@ -17,8 +17,7 @@ const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
     const [thumbOffset, setThumbOffset] = React.useState(0)
 
     React.useImperativeHandle(ref, () => ({
-        reset(val) {
-            console.log(val)
+        reset() {
             setThumbOffset(0)
         },
     }))

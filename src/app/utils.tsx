@@ -56,7 +56,7 @@ export const rangeInterpolation = (x1, y1, x2, y2, a) =>
     Math.round(lerp(x2, y2, invlerp(x1, y1, a)))
 
 //
-export const hexToRgb = hex => {
+export const hex2Rgb = hex => {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return result
         ? {
@@ -65,4 +65,12 @@ export const hexToRgb = hex => {
               b: parseInt(result[3], 16),
           }
         : null
+}
+
+//
+export const hsl2rgb = (h, s, l) => {
+    let a = s * Math.min(l, 1 - l)
+    let f = (n, k = (n + h / 30) % 12) =>
+        l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
+    return { r: f(0), g: f(8), b: f(4) }
 }
