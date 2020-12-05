@@ -4,6 +4,7 @@ import { hexToRgb } from "../../utils"
 
 interface Props {
     color?: string
+    onMouseUp?: (e) => void
 }
 
 interface RefObject {
@@ -24,6 +25,10 @@ const ColorPicker = React.forwardRef(
             setVal(e.target.value)
         }
 
+        const handleMouseUp = e => {
+            props.onMouseUp(e)
+        }
+
         return (
             <div className={styles.wrap} style={{ backgroundColor: val }}>
                 <span className={styles.label}>{`RGB(${hexToRgb(val).r}, ${
@@ -35,6 +40,7 @@ const ColorPicker = React.forwardRef(
                     ref={ref as any}
                     value={val}
                     onChange={handleChange}
+                    onBlur={handleMouseUp}
                 />
             </div>
         )

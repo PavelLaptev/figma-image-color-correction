@@ -30,13 +30,13 @@ interface settingsTypes {
     sharpenStrength: any
     vibrance: any
     invert: any
-    // mirror: any
+    mirror: any
     noiseStrength: any
     noiseTone: any
-    // dottetMode: any
+    dottetMode: any
     dottetAngle: any
     dottetSize: any
-    // tintColor: any
+    tintColor: any
     tintAlpha: any
 }
 
@@ -58,13 +58,13 @@ const initialSettings: settingsTypes = {
     sharpenStrength: 0,
     vibrance: 0,
     invert: "off",
-    // mirror: "off",
+    mirror: "off",
     noiseStrength: 0,
     noiseTone: 50,
-    // dottetMode: "off",
+    dottetMode: "off",
     dottetAngle: 1,
     dottetSize: 10,
-    // tintColor: "#fc4848",
+    tintColor: "#fc4848",
     tintAlpha: 0,
 }
 
@@ -97,8 +97,6 @@ const App = ({}) => {
     Object.keys(initialSettings).map(item => {
         return (refs[item] = React.useRef(null))
     })
-
-    // console.log(refs)
 
     //////////////////////////////////////////////////////////////
     /////////////////////////// STATES ///////////////////////////
@@ -139,41 +137,35 @@ const App = ({}) => {
                 .gamma(states.gamma / 100)
                 .triangleBlur(states.blur)
                 .lensBlur(
-                    Number(states.lensblurRadius),
-                    Number(states.lensblurBrightness / 10),
-                    Number(states.lensblurAngle / 100)
+                    states.lensblurRadius,
+                    states.lensblurBrightness / 10,
+                    states.lensblurAngle / 100
                 )
-                .unsharpMask(
-                    Number(states.sharpenRadius),
-                    Number(states.sharpenStrength)
-                )
+                .unsharpMask(states.sharpenRadius, states.sharpenStrength)
                 .vibrance(states.vibrance / 100)
                 .invertColor(states.invert)
-                // .mirror(mirrorState)
-                .noise(
-                    Number(states.noiseStrength) / 100,
-                    Number(states.noiseTone) / 100
+                .mirror(states.mirror)
+                .noise(states.noiseStrength / 100, states.noiseTone / 100)
+                .dotScreen(
+                    states.dottetMode,
+                    0,
+                    0.5,
+                    states.dottetAngle,
+                    states.dottetSize
                 )
-                // .dotScreen(
-                //     dottedState,
-                //     0,
-                //     0.5,
-                //     Number(dottAngleRef.current.value),
-                //     Number(dottSizeRef.current.value)
-                // )
-                // .colorHalftone(
-                //     dottedState,
-                //     0,
-                //     0.5,
-                //     Number(dottAngleRef.current.value),
-                //     Number(dottSizeRef.current.value)
-                // )
-                // .color(
-                //     Number(tintAlphaRef.current.value),
-                //     hexToRgb(tintRef.current.value).r,
-                //     hexToRgb(tintRef.current.value).g,
-                //     hexToRgb(tintRef.current.value).b
-                // )
+                .colorHalftone(
+                    states.dottetMode,
+                    0,
+                    0.5,
+                    states.dottetAngle,
+                    states.dottetSize
+                )
+                .color(
+                    Number(states.tintAlpha),
+                    hexToRgb(states.tintColor).r,
+                    hexToRgb(states.tintColor).g,
+                    hexToRgb(states.tintColor).b
+                )
                 .update()
         }
 
@@ -251,6 +243,30 @@ const App = ({}) => {
         }
     }, [imageData, states])
 
+    //CHANGE STATE ON CHANGE
+    const setStateOnChange = (
+        e: any,
+        prop: string,
+        isNumber: boolean = false,
+        value: string = null
+    ) => {
+        setStates(p => {
+            if (value === null) {
+                return {
+                    ...p,
+                    [prop]: isNumber
+                        ? Number(e.target.value)
+                        : e.target.textContent,
+                }
+            } else {
+                return {
+                    ...p,
+                    [prop]: e.target[value],
+                }
+            }
+        })
+    }
+
     // RETURN
     return (
         <section className={styles.app}>
@@ -275,12 +291,7 @@ const App = ({}) => {
                         min={-100}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    brightness: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "brightness", true)
                         }}
                     />
                     <Range
@@ -290,12 +301,7 @@ const App = ({}) => {
                         min={-100}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    contrast: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "contrast", true)
                         }}
                     />
                 </ControlsContainer>
@@ -313,12 +319,7 @@ const App = ({}) => {
                         min={-99}
                         max={99}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    hue: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "hue", true)
                         }}
                     />
                     <Range
@@ -328,12 +329,7 @@ const App = ({}) => {
                         min={-99}
                         max={99}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    saturation: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "saturation", true)
                         }}
                     />
                 </ControlsContainer>
@@ -351,12 +347,7 @@ const App = ({}) => {
                         max={100}
                         color="#FC4853"
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    channelsRed: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "channelsRed", true)
                         }}
                     />
                     <Range
@@ -366,12 +357,7 @@ const App = ({}) => {
                         max={99}
                         color="#63F39D"
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    channelsGreen: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "channelsGreen", true)
                         }}
                     />
                     <Range
@@ -381,12 +367,7 @@ const App = ({}) => {
                         max={99}
                         color="#1D6AFF"
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    channelsBlue: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "channelsBlue", true)
                         }}
                     />
                 </ControlsContainer>
@@ -402,12 +383,7 @@ const App = ({}) => {
                         value={initialSettings.exposure}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    exposure: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "exposure", true)
                         }}
                     />
                 </ControlsContainer>
@@ -423,12 +399,7 @@ const App = ({}) => {
                         value={initialSettings.gamma}
                         max={200}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    gamma: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "gamma", true)
                         }}
                     />
                 </ControlsContainer>
@@ -444,12 +415,7 @@ const App = ({}) => {
                         value={initialSettings.blur}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    blur: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "blur", true)
                         }}
                     />
                 </ControlsContainer>
@@ -466,12 +432,7 @@ const App = ({}) => {
                         value={initialSettings.lensblurRadius}
                         max={200}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    lensblurRadius: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "lensblurRadius", true)
                         }}
                     />
                     <Range
@@ -480,12 +441,7 @@ const App = ({}) => {
                         value={initialSettings.lensblurBrightness}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    lensblurBrightness: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "lensblurBrightness", true)
                         }}
                     />
                     <Range
@@ -494,12 +450,7 @@ const App = ({}) => {
                         value={initialSettings.lensblurAngle}
                         max={300}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    lensblurAngle: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "lensblurAngle", true)
                         }}
                     />
                 </ControlsContainer>
@@ -516,12 +467,7 @@ const App = ({}) => {
                         value={initialSettings.sharpenRadius}
                         max={10}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    sharpenRadius: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "sharpenRadius", true)
                         }}
                     />
                     <Range
@@ -530,12 +476,7 @@ const App = ({}) => {
                         value={initialSettings.sharpenStrength}
                         max={10}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    sharpenStrength: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "sharpenStrength", true)
                         }}
                     />
                 </ControlsContainer>
@@ -551,12 +492,7 @@ const App = ({}) => {
                         value={initialSettings.vibrance}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    vibrance: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "vibrance", true)
                         }}
                     />
                 </ControlsContainer>
@@ -568,14 +504,10 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Switcher
+                        ref={refs.invert}
+                        value={initialSettings.invert}
                         onClick={e => {
-                            console.log(e.target.getAttribute("data-label"))
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    invert: e.target.getAttribute("data-label"),
-                                }
-                            })
+                            setStateOnChange(e, "invert")
                         }}
                     />
                 </ControlsContainer>
@@ -587,9 +519,11 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <Switcher
-                    // onChange={e => {
-                    //     setMirrorState(e.target.getAttribute("data-label"))
-                    // }}
+                        ref={refs.mirror}
+                        value={initialSettings.mirror}
+                        onClick={e => {
+                            setStateOnChange(e, "mirror")
+                        }}
                     />
                 </ControlsContainer>
             </AdjustSection>
@@ -605,12 +539,7 @@ const App = ({}) => {
                         value={initialSettings.noiseStrength}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    noiseStrength: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "noiseStrength", true)
                         }}
                     />
                     <Range
@@ -619,12 +548,7 @@ const App = ({}) => {
                         value={initialSettings.noiseTone}
                         max={100}
                         onMouseUp={e => {
-                            setStates(p => {
-                                return {
-                                    ...p,
-                                    noiseTone: e.target.value,
-                                }
-                            })
+                            setStateOnChange(e, "noiseTone", true)
                         }}
                     />
                 </ControlsContainer>
@@ -637,11 +561,11 @@ const App = ({}) => {
                 <ControlsContainer>
                     <ControlsContainer height={"32px"} margin={"8px"}>
                         <Switcher
-                            // onChange={e => {
-                            //     setDottedState(
-                            //         e.target.getAttribute("data-label")
-                            //     )
-                            // }}
+                            ref={refs.dottetMode}
+                            value={initialSettings.dottetMode}
+                            onClick={e => {
+                                setStateOnChange(e, "dottetMode")
+                            }}
                             labels={["Off", "Dotted", "Halftone"]}
                         />
                     </ControlsContainer>
@@ -655,12 +579,7 @@ const App = ({}) => {
                             value={initialSettings.dottetAngle}
                             max={100}
                             onMouseUp={e => {
-                                setStates(p => {
-                                    return {
-                                        ...p,
-                                        dottetAngle: e.target.value,
-                                    }
-                                })
+                                setStateOnChange(e, "dottetAngle", true)
                             }}
                         />
                         <Range
@@ -669,12 +588,7 @@ const App = ({}) => {
                             value={initialSettings.dottetSize}
                             max={100}
                             onMouseUp={e => {
-                                setStates(p => {
-                                    return {
-                                        ...p,
-                                        dottetSize: e.target.value,
-                                    }
-                                })
+                                setStateOnChange(e, "dottetSize", true)
                             }}
                         />
                     </ControlsContainer>
@@ -687,10 +601,13 @@ const App = ({}) => {
             >
                 <ControlsContainer>
                     <ControlsContainer height={"60px"} margin={"8px"}>
-                        {/* <Colorpicker
+                        <Colorpicker
                             color={initialSettings.tintColor}
                             ref={refs.tintColor}
-                        /> */}
+                            onMouseUp={e => {
+                                setStateOnChange(e, "tintColor", false, "value")
+                            }}
+                        />
                     </ControlsContainer>
                     <ControlsContainer
                         height={"calc(100% - 60px)"}
@@ -702,12 +619,7 @@ const App = ({}) => {
                             value={initialSettings.tintAlpha}
                             max={100}
                             onMouseUp={e => {
-                                setStates(p => {
-                                    return {
-                                        ...p,
-                                        tintAlpha: e.target.value,
-                                    }
-                                })
+                                setStateOnChange(e, "tintAlpha", true)
                             }}
                         />
                     </ControlsContainer>

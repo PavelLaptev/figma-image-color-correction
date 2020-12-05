@@ -4,7 +4,7 @@ import styles from "./styles.module.scss"
 interface Props {
     id?: string
     labels?: Array<string>
-    switch?: boolean
+    value: string
     onClick?: (e) => void
 }
 
@@ -13,42 +13,31 @@ interface RefObject {
 }
 
 const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
-    const [selectedRadio, setSelectedRadio] = React.useState(props.labels[0])
+    // const [selectedRadio, setSelectedRadio] = React.useState(props.value)
     const [thumbOffset, setThumbOffset] = React.useState(0)
 
     React.useImperativeHandle(ref, () => ({
         reset(val) {
-            setSelectedRadio(val)
+            console.log(val)
+            setThumbOffset(0)
         },
     }))
 
     const handleClick = e => {
-        setSelectedRadio(e.target.getAttribute("data-label"))
         setThumbOffset(e.target.offsetLeft)
         props.onClick(e)
     }
 
-    let radioButtons = props.labels.map((item, i) => {
+    let radioButtons = props.labels.map(item => {
         return (
-            <div
-                className={styles.item}
-                key={item}
-                onClick={handleClick}
-                data-label={props.labels[i]}
-            >
-                <label className={styles.label} htmlFor={props.labels[i]}>
-                    {item}
-                </label>
+            <div className={styles.item} key={item} onClick={handleClick}>
+                <span className={styles.label}>{item}</span>
             </div>
         )
     })
 
     return (
-        <form
-            ref={ref as any}
-            className={styles.wrap}
-            data-label={selectedRadio}
-        >
+        <form ref={ref as any} className={styles.wrap}>
             {radioButtons}
             <div
                 className={styles.thumb}
@@ -63,7 +52,7 @@ const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
 
 Switcher.defaultProps = {
     reference: null,
-    switch: false,
+    value: "Off",
     labels: ["Off", "On"],
 } as Partial<Props>
 
