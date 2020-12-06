@@ -11,6 +11,7 @@ import ControlsContainer from "./components/ControlsContainer"
 import Range from "./components/Range"
 import Colorpicker from "./components/Colorpicker"
 import Switcher from "./components/Switcher"
+//
 
 interface settingsTypes {
     brightness: any
@@ -40,7 +41,7 @@ interface settingsTypes {
     tintAlpha: any
 }
 
-const initialSettings: settingsTypes = {
+let initialPreset: settingsTypes = {
     brightness: 0,
     contrast: 0,
     hue: 0,
@@ -94,7 +95,7 @@ const App = ({}) => {
     const applyRef = React.useRef(null)
 
     let refs = {} as settingsTypes
-    Object.keys(initialSettings).map(item => {
+    Object.keys(initialPreset).map(item => {
         return (refs[item] = React.useRef(null))
     })
 
@@ -102,9 +103,9 @@ const App = ({}) => {
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
     const [imageData, setImageData] = React.useState(null)
-    const [currentTool, setCurrentTool] = React.useState(toolsArray[13])
+    const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
 
-    const [states, setStates] = React.useState(initialSettings)
+    const [states, setStates] = React.useState(initialPreset)
 
     //////////////////////////////////////////////////////////////
     ///////////////////////// USE EFFECT /////////////////////////
@@ -287,7 +288,7 @@ const App = ({}) => {
                     <Range
                         label="Brightness"
                         ref={refs.brightness}
-                        value={initialSettings.brightness}
+                        value={initialPreset.brightness}
                         min={-100}
                         max={100}
                         onMouseUp={e => {
@@ -297,7 +298,7 @@ const App = ({}) => {
                     <Range
                         label="Contrast"
                         ref={refs.contrast}
-                        value={initialSettings.contrast}
+                        value={initialPreset.contrast}
                         min={-100}
                         max={100}
                         onMouseUp={e => {
@@ -315,7 +316,7 @@ const App = ({}) => {
                     <Range
                         label="HUE"
                         ref={refs.hue}
-                        value={initialSettings.hue}
+                        value={initialPreset.hue}
                         min={-99}
                         max={99}
                         onMouseUp={e => {
@@ -325,7 +326,7 @@ const App = ({}) => {
                     <Range
                         label="Saturation"
                         ref={refs.saturation}
-                        value={initialSettings.saturation}
+                        value={initialPreset.saturation}
                         min={-99}
                         max={99}
                         onMouseUp={e => {
@@ -342,7 +343,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         ref={refs.channelsRed}
-                        value={initialSettings.channelsRed}
+                        value={initialPreset.channelsRed}
                         min={-100}
                         max={100}
                         color="#FC4853"
@@ -352,7 +353,7 @@ const App = ({}) => {
                     />
                     <Range
                         ref={refs.channelsGreen}
-                        value={initialSettings.channelsGreen}
+                        value={initialPreset.channelsGreen}
                         min={-99}
                         max={99}
                         color="#63F39D"
@@ -362,7 +363,7 @@ const App = ({}) => {
                     />
                     <Range
                         ref={refs.channelsBlue}
-                        value={initialSettings.channelsBlue}
+                        value={initialPreset.channelsBlue}
                         min={-99}
                         max={99}
                         color="#1D6AFF"
@@ -380,7 +381,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         ref={refs.exposure}
-                        value={initialSettings.exposure}
+                        value={initialPreset.exposure}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "exposure", true)
@@ -396,7 +397,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         ref={refs.gamma}
-                        value={initialSettings.gamma}
+                        value={initialPreset.gamma}
                         max={200}
                         onMouseUp={e => {
                             setStateOnChange(e, "gamma", true)
@@ -412,7 +413,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         ref={refs.blur}
-                        value={initialSettings.blur}
+                        value={initialPreset.blur}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "blur", true)
@@ -429,7 +430,7 @@ const App = ({}) => {
                     <Range
                         label="Radius"
                         ref={refs.lensblurRadius}
-                        value={initialSettings.lensblurRadius}
+                        value={initialPreset.lensblurRadius}
                         max={200}
                         onMouseUp={e => {
                             setStateOnChange(e, "lensblurRadius", true)
@@ -438,7 +439,7 @@ const App = ({}) => {
                     <Range
                         label="Brightness"
                         ref={refs.lensblurBrightness}
-                        value={initialSettings.lensblurBrightness}
+                        value={initialPreset.lensblurBrightness}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "lensblurBrightness", true)
@@ -447,7 +448,7 @@ const App = ({}) => {
                     <Range
                         label="Angle"
                         ref={refs.lensblurAngle}
-                        value={initialSettings.lensblurAngle}
+                        value={initialPreset.lensblurAngle}
                         max={300}
                         onMouseUp={e => {
                             setStateOnChange(e, "lensblurAngle", true)
@@ -464,7 +465,7 @@ const App = ({}) => {
                     <Range
                         label="Radius"
                         ref={refs.sharpenRadius}
-                        value={initialSettings.sharpenRadius}
+                        value={initialPreset.sharpenRadius}
                         max={10}
                         onMouseUp={e => {
                             setStateOnChange(e, "sharpenRadius", true)
@@ -473,7 +474,7 @@ const App = ({}) => {
                     <Range
                         label="Strength"
                         ref={refs.sharpenStrength}
-                        value={initialSettings.sharpenStrength}
+                        value={initialPreset.sharpenStrength}
                         max={10}
                         onMouseUp={e => {
                             setStateOnChange(e, "sharpenStrength", true)
@@ -489,7 +490,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Range
                         ref={refs.vibrance}
-                        value={initialSettings.vibrance}
+                        value={initialPreset.vibrance}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "vibrance", true)
@@ -505,7 +506,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Switcher
                         ref={refs.invert}
-                        value={initialSettings.invert}
+                        value={initialPreset.invert}
                         onClick={e => {
                             setStateOnChange(e, "invert")
                         }}
@@ -520,7 +521,7 @@ const App = ({}) => {
                 <ControlsContainer>
                     <Switcher
                         ref={refs.mirror}
-                        value={initialSettings.mirror}
+                        value={initialPreset.mirror}
                         onClick={e => {
                             setStateOnChange(e, "mirror")
                         }}
@@ -536,7 +537,7 @@ const App = ({}) => {
                     <Range
                         label="Strength"
                         ref={refs.noiseStrength}
-                        value={initialSettings.noiseStrength}
+                        value={initialPreset.noiseStrength}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "noiseStrength", true)
@@ -545,7 +546,7 @@ const App = ({}) => {
                     <Range
                         label="Tone"
                         ref={refs.noiseTone}
-                        value={initialSettings.noiseTone}
+                        value={initialPreset.noiseTone}
                         max={100}
                         onMouseUp={e => {
                             setStateOnChange(e, "noiseTone", true)
@@ -562,7 +563,7 @@ const App = ({}) => {
                     <ControlsContainer height={"32px"} margin={"8px"}>
                         <Switcher
                             ref={refs.dottetMode}
-                            value={initialSettings.dottetMode}
+                            value={initialPreset.dottetMode}
                             onClick={e => {
                                 setStateOnChange(e, "dottetMode")
                             }}
@@ -576,7 +577,7 @@ const App = ({}) => {
                         <Range
                             label="Angle"
                             ref={refs.dottetAngle}
-                            value={initialSettings.dottetAngle}
+                            value={initialPreset.dottetAngle}
                             max={100}
                             onMouseUp={e => {
                                 setStateOnChange(e, "dottetAngle", true)
@@ -585,7 +586,7 @@ const App = ({}) => {
                         <Range
                             label="Size"
                             ref={refs.dottetSize}
-                            value={initialSettings.dottetSize}
+                            value={initialPreset.dottetSize}
                             max={100}
                             onMouseUp={e => {
                                 setStateOnChange(e, "dottetSize", true)
@@ -612,7 +613,7 @@ const App = ({}) => {
                         <Range
                             label="Strength"
                             ref={refs.tintAlpha}
-                            value={initialSettings.tintAlpha}
+                            value={initialPreset.tintAlpha}
                             max={100}
                             onMouseUp={e => {
                                 setStateOnChange(e, "tintAlpha", true)
@@ -637,14 +638,32 @@ const App = ({}) => {
                 />
                 <Dropdown icon={"settings"}>
                     <Button text={"Save preset"} />
-                    <Button text={"Load preset"} />
+                    <Button
+                        text={"Load preset"}
+                        type={"input"}
+                        onFileChange={e => {
+                            const fileReader = new FileReader()
+                            fileReader.readAsText(e.target.files[0], "UTF-8")
+                            fileReader.onload = e => {
+                                let newPreset = JSON.parse(
+                                    e.target.result as string
+                                )
+                                setStates(newPreset)
+                                Object.values(refs).map((item, i) => {
+                                    item.current.reset(
+                                        Object.values(newPreset)[i]
+                                    )
+                                })
+                            }
+                        }}
+                    />
                     <Button
                         text={"Reset all"}
-                        onClick={() => {
-                            setStates(initialSettings)
+                        onFocus={() => {
+                            setStates(initialPreset)
                             Object.values(refs).map((item, i) => {
                                 item.current.reset(
-                                    Object.values(initialSettings)[i]
+                                    Object.values(initialPreset)[i]
                                 )
                             })
                         }}

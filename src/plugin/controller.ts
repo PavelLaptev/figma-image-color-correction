@@ -9,7 +9,7 @@ export function openLink(url) {
         { visible: false }
     )
     setTimeout(() => {
-        figma.closePlugin("(♡-_-♡) 𝕿𝖍𝖆𝖓𝖐 𝖞𝖔𝖚, 𝕾𝖊𝖓𝖕𝖆𝖎! ")
+        figma.closePlugin("(♡-_-♡) 𝙏𝙝𝙖𝙣𝙠 𝙮𝙤𝙪 𝙎𝙚𝙣𝙥𝙖𝙞 ")
     }, 500)
 }
 

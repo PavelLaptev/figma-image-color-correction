@@ -38,10 +38,11 @@
     &:after {
         content: "";
         border-radius: 10px;
-        left: 3px;
+        left: 50%;
+        transform: translateX(-50%);
         position: absolute;
         display: block;
-        width: 4px;
+        width: 3px;
         height: 8px;
         background-color: var(--base-clr);
     }

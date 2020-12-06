@@ -3,6 +3,7 @@
 interface CssExports {
     button: string
     icon: string
+    input: string
     text: string
 }
 export const cssExports: CssExports

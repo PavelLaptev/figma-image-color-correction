@@ -5,13 +5,29 @@
     display: flex;
 }
 
+.activeButton {
+    z-index: 2;
+    background-color: var(--base-middle-clr);
+}
+
 .container {
+    opacity: 0;
+    pointer-events: none;
     z-index: 1;
     display: flex;
     flex-direction: column;
     position: absolute;
     bottom: 38px;
     right: 0;
+    transition: all 0.14s ease-in-out;
+    transform: scale(0.96);
+    transform-origin: right bottom;
+}
+
+.activeMenu {
+    pointer-events: auto;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .childContainer {
@@ -22,4 +38,14 @@
     padding: 8px;
     margin-bottom: 8px;
     background-color: var(--base-light-clr);
+}
+
+.back {
+    z-index: -1;
+    position: absolute;
+    bottom: -72px;
+    right: -36px;
+    width: 300%;
+    height: 720px;
+    background-color: rgba(0, 0, 0, 0.3);
 }

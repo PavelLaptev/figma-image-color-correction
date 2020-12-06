@@ -13,24 +13,23 @@ const Dropdown: React.FunctionComponent<Props> = props => {
     const [toggle, setToggle] = React.useState(false)
 
     return (
-        <div
-            className={`${props.className} ${styles.wrap}`}
-            onBlur={() => {
-                setToggle(false)
-            }}
-        >
-            <Button icon={props.icon} onClick={() => setToggle(!toggle)} />
-            <div
-                style={{ display: toggle ? "flex" : "none" }}
-                className={`${styles.container}`}
+        <div className={`${props.className} ${styles.wrap}`}>
+            <Button
+                icon={props.icon}
                 onMouseDown={() => {
-                    setToggle(false)
+                    setToggle(!toggle)
                 }}
+                className={toggle ? styles.activeButton : null}
+            />
+            <div
+                className={`${styles.container} ${
+                    toggle ? styles.activeMenu : null
+                }`}
             >
                 <div className={`${styles.childContainer}`}>
                     <Button
                         text={"Support Plugin"}
-                        onClick={() =>
+                        onMouseDown={() =>
                             parent.postMessage(
                                 { pluginMessage: { type: "donate-link" } },
                                 "*"
@@ -38,9 +37,20 @@ const Dropdown: React.FunctionComponent<Props> = props => {
                         }
                     />
                 </div>
-                <div className={`${styles.childContainer}`}>
+                <div
+                    className={`${styles.childContainer}`}
+                    onClick={() => {
+                        setToggle(false)
+                    }}
+                >
                     {props.children}
                 </div>
+                <div
+                    onClick={() => {
+                        setToggle(false)
+                    }}
+                    className={`${styles.back}`}
+                />
             </div>
         </div>
     )
