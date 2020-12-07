@@ -44,7 +44,7 @@ figma.ui.onmessage = msg => {
             type: "IMAGE",
             opacity: 1,
             blendMode: "NORMAL",
-            scaleMode: "FILL",
+            scaleMode: currentFills[0].scaleMode,
             imageHash: imageHash,
         }
 

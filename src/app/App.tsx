@@ -12,6 +12,7 @@ import Range from "./components/Range"
 import Colorpicker from "./components/Colorpicker"
 import Switcher from "./components/Switcher"
 //
+const FileSaver = require("file-saver")
 
 interface settingsTypes {
     brightness: any
@@ -171,6 +172,7 @@ const App = ({}) => {
         }
 
         const drawCanvas = () => {
+            ctx.clearRect(0, 0, c.width, c.height)
             let wRatio = calculateAspectRatioFit(
                 image.width,
                 image.height,
@@ -186,10 +188,10 @@ const App = ({}) => {
 
             c.width = wRatio
             c.height = hRatio
-            ctx.clearRect(0, 0, c.width, c.height)
 
             addEffectsToCanvas(fxc)
 
+            ctx.imageSmoothingQuality = "medium"
             ctx.drawImage(fxc, 0, 0, c.width, c.height)
         }
 
@@ -224,6 +226,8 @@ const App = ({}) => {
 
                 setImageData(base64Data)
             } else {
+                setImageData(null)
+                ctx.clearRect(0, 0, c.width, c.height)
                 console.log("nothing selected")
             }
         }
@@ -637,7 +641,21 @@ const App = ({}) => {
                     reference={applyRef}
                 />
                 <Dropdown icon={"settings"}>
-                    <Button text={"Save preset"} />
+                    <Button
+                        text={"Save preset"}
+                        onClick={() => {
+                            let blob = new Blob(
+                                [JSON.stringify(states, null, "\t")],
+                                {
+                                    type: "text/plain;charset=utf-8",
+                                }
+                            )
+                            FileSaver.saveAs(
+                                blob,
+                                "image-correction-preset.json"
+                            )
+                        }}
+                    />
                     <Button
                         text={"Load preset"}
                         type={"input"}
