@@ -1,3 +1,5 @@
+// import { log } from "../utils"
+
 // Show UI
 figma.showUI(__html__, { width: 456, height: 690 })
 
@@ -20,6 +22,7 @@ const sendFullImage = () => {
             .getImageByHash(node["fills"][node["fills"].length - 1].imageHash)
             .getBytesAsync()
             .then(res => figma.ui.postMessage({ type: "image", data: res }))
+        // log("image recieved from Figma")
     } catch {
         figma.ui.postMessage({ type: "image", data: null })
         figma.notify("📌 Select frame with image", {
@@ -41,10 +44,7 @@ figma.ui.onmessage = msg => {
         const imageHash = figma.createImage(msg.bytes).hash
 
         const newFill = {
-            type: "IMAGE",
-            opacity: 1,
-            blendMode: "NORMAL",
-            scaleMode: currentFills[0].scaleMode,
+            ...currentFills[0],
             imageHash: imageHash,
         }
 
@@ -63,3 +63,6 @@ figma.ui.onmessage = msg => {
 }
 
 figma.currentPage.setRelaunchData({ open: "" })
+
+// TO-DO
+// Add original images size caption

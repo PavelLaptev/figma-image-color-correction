@@ -33,6 +33,11 @@
             var(--checker-clr) 100%
         );
     background-color: var(--base-middle-clr);
+    &:hover {
+        .sizeCaption {
+            opacity: 1;
+        }
+    }
 }
 
 .canvas {
@@ -66,4 +71,29 @@
     border-radius: var(--radius-m);
     padding: 20px;
     background-color: var(--base-clr);
+}
+
+.sizeCaption {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0;
+    padding: 4px 6px;
+    background: var(--base-clr);
+    border-radius: 4px;
+
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+
+    margin: 0;
+    z-index: 4;
+    bottom: 12px;
+    right: 12px;
+    position: absolute;
+    color: var(--primary-clr);
+    transition: opacity 0.3s ease;
+    span {
+        opacity: 0.6;
+    }
 }

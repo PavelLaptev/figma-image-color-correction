@@ -74,3 +74,29 @@ export const hsl2rgb = (h, s, l) => {
         l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
     return { r: f(0), g: f(8), b: f(4) }
 }
+
+//
+export const log = (text = "Hi!" as any, mode = "default") => {
+    let restStyles = "border-radius: 4px; padding: 2px 0;"
+    if (mode === "default") {
+        console.log(
+            `%c ${text}`,
+            `background: rgba(44, 171, 255, 0.14);${restStyles}`
+        )
+    }
+    if (mode === "err") {
+        console.log(
+            `%c ${text}`,
+            `background: rgba(255,0,0,0.14);${restStyles}`
+        )
+    }
+    if (mode === "succ") {
+        console.log(
+            `%c ${text}`,
+            `background: rgba(0, 255, 55, 0.14);${restStyles}`
+        )
+    }
+    if (mode === "dev") {
+        console.log(text)
+    }
+}

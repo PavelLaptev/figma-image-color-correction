@@ -2,7 +2,12 @@ import * as React from "react"
 import styles from "./app.module.scss"
 import fx from "../glfx/glfx"
 //
-import { imageToArrayBuffer, calculateAspectRatioFit, hsl2rgb } from "./utils"
+import {
+    imageToArrayBuffer,
+    calculateAspectRatioFit,
+    hsl2rgb,
+    log,
+} from "../utils"
 import Button from "./components/Button"
 import Dropdown from "./components/Dropdown"
 import AdjustSection from "./components/AdjustSection"
@@ -104,9 +109,23 @@ const App = ({}) => {
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
     const [imageData, setImageData] = React.useState(null)
+    const [imageSizeInfo, setImageSizeInfo] = React.useState({
+        width: 0,
+        height: 0,
+    })
     const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
 
     const [states, setStates] = React.useState(initialPreset)
+
+    function usePrevious(value) {
+        const ref = React.useRef()
+        React.useEffect(() => {
+            ref.current = value
+        })
+        return ref.current
+    }
+
+    const prevState = usePrevious({ imageData, setImageData })
 
     //////////////////////////////////////////////////////////////
     ///////////////////////// USE EFFECT /////////////////////////
@@ -172,7 +191,10 @@ const App = ({}) => {
         }
 
         const drawCanvas = () => {
+            setImageSizeInfo({ width: image.width, height: image.height })
+
             ctx.clearRect(0, 0, c.width, c.height)
+
             let wRatio = calculateAspectRatioFit(
                 image.width,
                 image.height,
@@ -186,29 +208,72 @@ const App = ({}) => {
                 300
             ).height
 
-            c.width = wRatio
-            c.height = hRatio
+            c.width = wRatio * window.devicePixelRatio
+            c.height = hRatio * window.devicePixelRatio
+            c.style.width = wRatio
+            c.style.height = hRatio
 
             addEffectsToCanvas(fxc)
 
-            ctx.imageSmoothingQuality = "medium"
             ctx.drawImage(fxc, 0, 0, c.width, c.height)
         }
 
-        const resizeAndExport = function() {
-            // create a new canvas
-            let finalFXCanvas = fx.canvas()
-            finalFXCanvas.width = image.width
-            finalFXCanvas.height = image.height
+        const resizeImage = imgData => {
+            let cc = document.createElement("canvas")
+            let ctxc = cc.getContext("2d")
 
-            // draw our canvas to the new one
-            addEffectsToCanvas(finalFXCanvas)
+            let newImage = new Image()
+            newImage.src = imgData
 
-            return finalFXCanvas
+            newImage.onload = () => {
+                let wRatio = calculateAspectRatioFit(
+                    newImage.width,
+                    newImage.height,
+                    408,
+                    300
+                ).width
+                let hRatio = calculateAspectRatioFit(
+                    newImage.width,
+                    newImage.height,
+                    408,
+                    300
+                ).height
+
+                cc.width = wRatio * window.devicePixelRatio
+                cc.height = hRatio * window.devicePixelRatio
+
+                ctxc.clearRect(0, 0, c.width, c.height)
+                ctxc.imageSmoothingQuality = "high"
+                ctxc.drawImage(newImage, 0, 0, cc.width, cc.height)
+                setImageData(cc.toDataURL("image/png"))
+            }
         }
+
+        // const drawCanvasPartly = () => {
+        //     // setImageData(c.toDataURL("image/png"))
+        //     addEffectsToCanvas(fxc)
+        //     ctx.drawImage(fxc, 0, 0, c.width, c.height)
+        // }
+
+        // image.onload = () => {
+        //     drawCanvas()
+        //     setImageData(c.toDataURL("image/png"))
+        // }
 
         image.onload = () => {
             drawCanvas()
+            // if ((prevState as any).imageData === null) {
+            //     log("image is null", "err")
+            //     drawCanvas()
+            // }
+
+            // if ((prevState as any).imageData === imageData) {
+            //     log("same image loaded")
+            //     drawCanvasPartly()
+            // } else {
+            //     log("new image loaded", "succ")
+            //     drawCanvas()
+            // }
         }
 
         // catch the message
@@ -224,16 +289,30 @@ const App = ({}) => {
                         }, "")
                     )
 
-                setImageData(base64Data)
+                // console.log(resizeImage(base64Data))
+                resizeImage(base64Data)
+                log("image recieved on massage")
             } else {
                 setImageData(null)
                 ctx.clearRect(0, 0, c.width, c.height)
-                console.log("nothing selected")
+                log("nothing selected", "err")
             }
         }
 
+        const resizeAndExportCanvas = function() {
+            // create a new canvas
+            let finalFXCanvas = fx.canvas()
+            finalFXCanvas.width = image.width
+            finalFXCanvas.height = image.height
+
+            // draw our canvas to the new one
+            addEffectsToCanvas(finalFXCanvas)
+
+            return finalFXCanvas
+        }
+
         const applyResults = () => {
-            imageToArrayBuffer(resizeAndExport()).then(bytes => {
+            imageToArrayBuffer(resizeAndExportCanvas()).then(bytes => {
                 parent.postMessage(
                     { pluginMessage: { type: "img", bytes } },
                     "*"
@@ -276,6 +355,13 @@ const App = ({}) => {
     return (
         <section className={styles.app}>
             <div className={styles.canvasWrap}>
+                <p
+                    className={styles.sizeCaption}
+                    style={{ display: imageData ? "block" : "none" }}
+                >
+                    <span>Original size: </span>
+                    {imageSizeInfo.width}x{imageSizeInfo.height}px
+                </p>
                 <canvas ref={canvasRef} className={styles.canvas} />
                 <p
                     className={styles.statusText}
