@@ -6,6 +6,7 @@ interface CssExports {
     canvas: string
     canvasWrap: string
     generalActions: string
+    loader: string
     sizeCaption: string
     statusText: string
 }

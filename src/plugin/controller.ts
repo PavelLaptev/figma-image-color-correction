@@ -21,10 +21,20 @@ const sendFullImage = () => {
         figma
             .getImageByHash(node["fills"][node["fills"].length - 1].imageHash)
             .getBytesAsync()
-            .then(res => figma.ui.postMessage({ type: "image", data: res }))
+            .then(res =>
+                figma.ui.postMessage({
+                    type: "image",
+                    data: res,
+                    event: "section-changed",
+                })
+            )
         // log("image recieved from Figma")
     } catch {
-        figma.ui.postMessage({ type: "image", data: null })
+        figma.ui.postMessage({
+            type: "image",
+            data: null,
+            event: "section-changed",
+        })
         figma.notify("📌 Select frame with image", {
             timeout: 2000,
         })

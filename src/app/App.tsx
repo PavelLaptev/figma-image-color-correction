@@ -108,6 +108,8 @@ const App = ({}) => {
     //////////////////////////////////////////////////////////////
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
+    const [isLoading, setIsLoading] = React.useState(false)
+    const [originalImageData, setOriginalImageData] = React.useState(null)
     const [imageData, setImageData] = React.useState(null)
     const [imageSizeInfo, setImageSizeInfo] = React.useState({
         width: 0,
@@ -116,16 +118,6 @@ const App = ({}) => {
     const [currentTool, setCurrentTool] = React.useState(toolsArray[0])
 
     const [states, setStates] = React.useState(initialPreset)
-
-    function usePrevious(value) {
-        const ref = React.useRef()
-        React.useEffect(() => {
-            ref.current = value
-        })
-        return ref.current
-    }
-
-    const prevState = usePrevious({ imageData, setImageData })
 
     //////////////////////////////////////////////////////////////
     ///////////////////////// USE EFFECT /////////////////////////
@@ -138,10 +130,15 @@ const App = ({}) => {
         fxc.width = c.width
         fxc.height = c.height
 
+        // Resized image
         const image = new Image()
         image.src = imageData
 
-        const addEffectsToCanvas = canvas => {
+        // Original image
+        const originalImage = new Image()
+        originalImage.src = originalImageData
+
+        const addEffectsToCanvas = (canvas, image) => {
             canvas
                 .draw(canvas.texture(image))
                 .brightnessContrast(
@@ -191,7 +188,10 @@ const App = ({}) => {
         }
 
         const drawCanvas = () => {
-            setImageSizeInfo({ width: image.width, height: image.height })
+            setImageSizeInfo({
+                width: originalImage.width,
+                height: originalImage.height,
+            })
 
             ctx.clearRect(0, 0, c.width, c.height)
 
@@ -213,7 +213,7 @@ const App = ({}) => {
             c.style.width = wRatio
             c.style.height = hRatio
 
-            addEffectsToCanvas(fxc)
+            addEffectsToCanvas(fxc, image)
 
             ctx.drawImage(fxc, 0, 0, c.width, c.height)
         }
@@ -243,42 +243,24 @@ const App = ({}) => {
                 cc.height = hRatio * window.devicePixelRatio
 
                 ctxc.clearRect(0, 0, c.width, c.height)
-                ctxc.imageSmoothingQuality = "high"
                 ctxc.drawImage(newImage, 0, 0, cc.width, cc.height)
                 setImageData(cc.toDataURL("image/png"))
             }
         }
 
-        // const drawCanvasPartly = () => {
-        //     // setImageData(c.toDataURL("image/png"))
-        //     addEffectsToCanvas(fxc)
-        //     ctx.drawImage(fxc, 0, 0, c.width, c.height)
-        // }
-
-        // image.onload = () => {
-        //     drawCanvas()
-        //     setImageData(c.toDataURL("image/png"))
-        // }
-
         image.onload = () => {
             drawCanvas()
-            // if ((prevState as any).imageData === null) {
-            //     log("image is null", "err")
-            //     drawCanvas()
-            // }
-
-            // if ((prevState as any).imageData === imageData) {
-            //     log("same image loaded")
-            //     drawCanvasPartly()
-            // } else {
-            //     log("new image loaded", "succ")
-            //     drawCanvas()
-            // }
+            setIsLoading(false)
+            log("image loaded")
         }
 
         // catch the message
         onmessage = event => {
             let imgData = event.data.pluginMessage.data
+
+            if (event.data.pluginMessage.event === "section-changed") {
+                setIsLoading(true)
+            }
 
             if (imgData) {
                 let base64Data =
@@ -289,10 +271,12 @@ const App = ({}) => {
                         }, "")
                     )
 
-                // console.log(resizeImage(base64Data))
+                setOriginalImageData(base64Data)
                 resizeImage(base64Data)
-                log("image recieved on massage")
+
+                // log("image recieved on massage")
             } else {
+                setOriginalImageData(null)
                 setImageData(null)
                 ctx.clearRect(0, 0, c.width, c.height)
                 log("nothing selected", "err")
@@ -306,13 +290,15 @@ const App = ({}) => {
             finalFXCanvas.height = image.height
 
             // draw our canvas to the new one
-            addEffectsToCanvas(finalFXCanvas)
+            addEffectsToCanvas(finalFXCanvas, originalImage)
 
             return finalFXCanvas
         }
 
         const applyResults = () => {
+            setIsLoading(true)
             imageToArrayBuffer(resizeAndExportCanvas()).then(bytes => {
+                setIsLoading(false)
                 parent.postMessage(
                     { pluginMessage: { type: "img", bytes } },
                     "*"
@@ -355,6 +341,16 @@ const App = ({}) => {
     return (
         <section className={styles.app}>
             <div className={styles.canvasWrap}>
+                <div
+                    className={styles.loader}
+                    style={{ opacity: isLoading ? 1 : 0 }}
+                ></div>
+                <p
+                    className={styles.statusText}
+                    style={{ display: !imageData ? "block" : "none" }}
+                >
+                    Select frame with image
+                </p>
                 <p
                     className={styles.sizeCaption}
                     style={{ display: imageData ? "block" : "none" }}
@@ -363,12 +359,6 @@ const App = ({}) => {
                     {imageSizeInfo.width}x{imageSizeInfo.height}px
                 </p>
                 <canvas ref={canvasRef} className={styles.canvas} />
-                <p
-                    className={styles.statusText}
-                    style={{ display: !imageData ? "block" : "none" }}
-                >
-                    Select frame with image
-                </p>
             </div>
             <AdjustSection
                 title="Brightness and contrast"
