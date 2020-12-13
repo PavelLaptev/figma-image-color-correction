@@ -3,8 +3,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--base-middle-clr);
-    transition: filter 0.1s ease;
+    background-color: var(--base-middle-clr);
 
     input {
         z-index: 4;
@@ -32,9 +31,8 @@
     line-height: 1.1;
 }
 
-.default {
+.defaultPoint {
     z-index: 3;
-    // mix-blend-mode: overlay;
     border-radius: 10px;
     width: 4px;
     transform: translate(-2px, -50%);
@@ -42,7 +40,6 @@
     background-color: var(--primary-clr);
     position: absolute;
     top: 50%;
-    // opacity: 0.4;
 }
 
 .scale {

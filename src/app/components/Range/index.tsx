@@ -49,7 +49,7 @@ const Range = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
             />
             <span className={styles.label}>{props.label}</span>
             <div
-                className={styles.default}
+                className={styles.defaultPoint}
                 style={{
                     left: `${rangeInterpolation(
                         props.min,

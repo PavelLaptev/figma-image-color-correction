@@ -19,7 +19,7 @@
     position: absolute;
     bottom: 38px;
     right: 0;
-    transition: all 0.14s ease-in-out;
+    transition: all var(--transition-m);
     transform: scale(0.96);
     transform-origin: right bottom;
 }

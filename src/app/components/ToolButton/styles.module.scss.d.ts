@@ -3,6 +3,7 @@
 interface CssExports {
     active: string
     icon: string
+    isDefaultPoint: string
     originalInput: string
     wrap: string
 }

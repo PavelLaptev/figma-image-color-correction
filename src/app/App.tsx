@@ -69,7 +69,7 @@ let initialPreset: settingsTypes = {
     noiseStrength: 0,
     noiseTone: 50,
     dottetMode: "off",
-    dottetAngle: 1,
+    dottetAngle: 10,
     dottetSize: 10,
     tintColor: 0,
     tintAlpha: 0,
@@ -108,7 +108,7 @@ const App = ({}) => {
     //////////////////////////////////////////////////////////////
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
-    const [isLoading, setIsLoading] = React.useState(false)
+    const [isLoadingState, setIsLoadingState] = React.useState(false)
     const [originalImageData, setOriginalImageData] = React.useState(null)
     const [imageData, setImageData] = React.useState(null)
     const [imageSizeInfo, setImageSizeInfo] = React.useState({
@@ -168,14 +168,14 @@ const App = ({}) => {
                     states.dottetMode,
                     0,
                     0.5,
-                    states.dottetAngle,
+                    states.dottetAngle / 100,
                     states.dottetSize
                 )
                 .colorHalftone(
                     states.dottetMode,
                     0,
                     0.5,
-                    states.dottetAngle,
+                    states.dottetAngle / 100,
                     states.dottetSize
                 )
                 .color(
@@ -250,16 +250,18 @@ const App = ({}) => {
 
         image.onload = () => {
             drawCanvas()
-            setIsLoading(false)
-            log("image loaded")
+            setIsLoadingState(false)
         }
 
         // catch the message
         onmessage = event => {
             let imgData = event.data.pluginMessage.data
 
-            if (event.data.pluginMessage.event === "section-changed") {
-                setIsLoading(true)
+            if (
+                event.data.pluginMessage.event === "section-changed" &&
+                imgData !== null
+            ) {
+                setIsLoadingState(true)
             }
 
             if (imgData) {
@@ -273,8 +275,7 @@ const App = ({}) => {
 
                 setOriginalImageData(base64Data)
                 resizeImage(base64Data)
-
-                // log("image recieved on massage")
+                log("new image loaded")
             } else {
                 setOriginalImageData(null)
                 setImageData(null)
@@ -296,9 +297,9 @@ const App = ({}) => {
         }
 
         const applyResults = () => {
-            setIsLoading(true)
+            setIsLoadingState(true)
             imageToArrayBuffer(resizeAndExportCanvas()).then(bytes => {
-                setIsLoading(false)
+                setIsLoadingState(false)
                 parent.postMessage(
                     { pluginMessage: { type: "img", bytes } },
                     "*"
@@ -313,13 +314,17 @@ const App = ({}) => {
         }
     }, [imageData, states])
 
-    //CHANGE STATE ON CHANGE
+    ////////////////////////////////////////////////
+    //////////// CHANGE STATE ON CHANGE ////////////
+    ////////////////////////////////////////////////
     const setStateOnChange = (
         e: any,
+        // category: string,
         prop: string,
         isNumber: boolean = false,
         value: string = null
     ) => {
+        console.log(e.target.value, initialPreset[prop])
         setStates(p => {
             if (value === null) {
                 return {
@@ -337,13 +342,15 @@ const App = ({}) => {
         })
     }
 
-    // RETURN
+    ////////////////////////////////////////////////
+    //////////////////// RETURN ////////////////////
+    ////////////////////////////////////////////////
     return (
         <section className={styles.app}>
             <div className={styles.canvasWrap}>
                 <div
                     className={styles.loader}
-                    style={{ opacity: isLoading ? 1 : 0 }}
+                    style={{ opacity: isLoadingState ? 1 : 0 }}
                 ></div>
                 <p
                     className={styles.statusText}

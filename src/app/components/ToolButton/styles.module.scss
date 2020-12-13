@@ -22,6 +22,15 @@
     position: absolute;
 }
 
+.isDefaultPoint {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 3px;
+    height: 3px;
+    background-color: var(--primary-clr);
+}
+
 .active {
     background-color: var(--base-light-clr);
 }
