@@ -1,22 +1,44 @@
-# SVG To Image
+# Figma Image Editor
 
 ![Plugin preview](web-preview.jpg)
 
-Use SVG as raster images in Figma. A simple solution for SVG import.
+Manipulate image with many different color adjustments and filters.
 
-Since at the moment Figma can't paste SVG images as a fill, so you can use this plugin.
+You can also save and load your own presets.
 
-There are two ways how you can paste SVG:
+### Color adjustments:
 
--   From a file
--   From your clipboard. It could be a slow method if you use complex images because of the approach used in the plugin.
+-   Brightness
+-   Contrast
+-   Hue
+-   Channels
+-   Exposure
+-   Gamma
+-   Vibrance
+-   Tint
 
-You can also scale your image when you import it, as you usually do when you export images in Figma — by scale (@2x, @3x, etc.) by width or height. All these scale modes have restrictions for the maximum value.
+### Filters:
 
-[Install Plugin](https://www.figma.com/community/plugin/891448180042913164)
+-   Invert
+-   Mirror
+-   Noise
+-   Color Halftone
+-   Monochrome Halftone
+-   Blur
+-   Lens blur
+-   Sharp
 
-Check the demo on [Youtube](https://youtu.be/8jlZCFvIhdo)
+---
 
-Enjoy!
+#### Upcoming features:
 
-Any question please leave in the Issues or send me directly at [laptev.graphics@gmail.com](mailto:laptev.graphics@gmail.com)
+-   Show changed values
+-   Bulge / Pinch warp
+-   Swirl
+-   Ink
+-   Edge Work
+-   Hexagonal Pixelate
+
+---
+
+If you want to support [the next release](https://www.paypal.com/paypalme/pavellaptev)

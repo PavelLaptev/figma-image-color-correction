@@ -92,22 +92,6 @@ const toolsArray = [
     "tint",
 ]
 
-// const toolsDefaultArray =
-//     {"brightnes-contrast": true,
-//     "hue": true,
-//     "channels": true,
-//     "exposure",
-//     "gamma": true,
-//     "blur": true,
-//     "lens-blur": true,
-//     "sharp": true,
-//     "vibrance": true,
-//     "invert": true,
-//     "mirror": true,
-//     "noise": true,
-//     "dotted": true,
-//     "tint": true,}
-
 // Application
 const App = ({}) => {
     //////////////////////////////////////////////////////////////
@@ -124,22 +108,6 @@ const App = ({}) => {
     //////////////////////////////////////////////////////////////
     /////////////////////////// STATES ///////////////////////////
     //////////////////////////////////////////////////////////////
-    const [isDefaultStates, setIsDefaultStates] = React.useState({
-        "brightnes-contrast": true,
-        hue: true,
-        channels: true,
-        exposure: true,
-        gamma: true,
-        blur: true,
-        "lens-blur": true,
-        sharp: true,
-        vibrance: true,
-        invert: true,
-        mirror: true,
-        noise: true,
-        dotted: true,
-        tint: true,
-    })
     const [isLoadingState, setIsLoadingState] = React.useState(false)
     const [originalImageData, setOriginalImageData] = React.useState(null)
     const [imageData, setImageData] = React.useState(null)
@@ -354,35 +322,7 @@ const App = ({}) => {
         prop,
         isNumber = false,
         value = null,
-        category,
     }) => {
-        // console.log(
-        //     event.target.value,
-        //     initialPreset[prop],
-        //     isDefaultStates[category]
-        // )
-
-        // const checkIf
-        if (states[prop] !== initialPreset[prop]) {
-            console.log(
-                "no",
-                isNumber
-                    ? Number(event.target.value)
-                    : event.target.textContent,
-                initialPreset[prop]
-            )
-        } else {
-            console.log("yes", event.target.value, initialPreset[prop])
-        }
-
-        setIsDefaultStates(p => {
-            return {
-                ...p,
-                [category]: states[prop] !== initialPreset[prop] ? false : true,
-            }
-        })
-
-        // console.log(isDefaultStates)
         setStates(p => {
             if (value === null) {
                 return {
@@ -441,7 +381,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "brightness",
                                 isNumber: true,
-                                category: toolsArray[0],
                             })
                         }}
                     />
@@ -456,7 +395,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "contrast",
                                 isNumber: true,
-                                category: toolsArray[0],
                             })
                         }}
                     />
@@ -479,7 +417,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "hue",
                                 isNumber: true,
-                                category: toolsArray[1],
                             })
                         }}
                     />
@@ -494,7 +431,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "saturation",
                                 isNumber: true,
-                                category: toolsArray[1],
                             })
                         }}
                     />
@@ -517,7 +453,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "channelsRed",
                                 isNumber: true,
-                                category: toolsArray[2],
                             })
                         }}
                     />
@@ -532,7 +467,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "channelsGreen",
                                 isNumber: true,
-                                category: toolsArray[2],
                             })
                         }}
                     />
@@ -547,7 +481,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "channelsBlue",
                                 isNumber: true,
-                                category: toolsArray[2],
                             })
                         }}
                     />
@@ -568,7 +501,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "exposure",
                                 isNumber: true,
-                                category: toolsArray[3],
                             })
                         }}
                     />
@@ -589,7 +521,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "gamma",
                                 isNumber: true,
-                                category: toolsArray[4],
                             })
                         }}
                     />
@@ -610,7 +541,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "blur",
                                 isNumber: true,
-                                category: toolsArray[5],
                             })
                         }}
                     />
@@ -632,7 +562,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "lensblurRadius",
                                 isNumber: true,
-                                category: toolsArray[6],
                             })
                         }}
                     />
@@ -646,7 +575,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "lensblurBrightness",
                                 isNumber: true,
-                                category: toolsArray[6],
                             })
                         }}
                     />
@@ -660,7 +588,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "lensblurAngle",
                                 isNumber: true,
-                                category: toolsArray[6],
                             })
                         }}
                     />
@@ -682,7 +609,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "sharpenRadius",
                                 isNumber: true,
-                                category: toolsArray[7],
                             })
                         }}
                     />
@@ -696,7 +622,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "sharpenStrength",
                                 isNumber: true,
-                                category: toolsArray[7],
                             })
                         }}
                     />
@@ -717,7 +642,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "vibrance",
                                 isNumber: true,
-                                category: toolsArray[8],
                             })
                         }}
                     />
@@ -736,7 +660,6 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "invert",
-                                category: toolsArray[9],
                             })
                         }}
                     />
@@ -755,7 +678,6 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "mirror",
-                                category: toolsArray[10],
                             })
                         }}
                     />
@@ -777,7 +699,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "noiseStrength",
                                 isNumber: true,
-                                category: toolsArray[11],
                             })
                         }}
                     />
@@ -791,7 +712,6 @@ const App = ({}) => {
                                 event: e,
                                 prop: "noiseTone",
                                 isNumber: true,
-                                category: toolsArray[11],
                             })
                         }}
                     />
@@ -811,7 +731,6 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "dottetMode",
-                                    category: toolsArray[12],
                                 })
                             }}
                             labels={["Off", "Dotted", "Halftone"]}
@@ -831,7 +750,6 @@ const App = ({}) => {
                                     event: e,
                                     prop: "dottetAngle",
                                     isNumber: true,
-                                    category: toolsArray[12],
                                 })
                             }}
                         />
@@ -845,7 +763,6 @@ const App = ({}) => {
                                     event: e,
                                     prop: "dottetSize",
                                     isNumber: true,
-                                    category: toolsArray[12],
                                 })
                             }}
                         />
@@ -866,7 +783,6 @@ const App = ({}) => {
                                     event: e,
                                     prop: "tintColor",
                                     isNumber: true,
-                                    category: toolsArray[13],
                                 })
                             }}
                         />
@@ -882,7 +798,6 @@ const App = ({}) => {
                                     event: e,
                                     prop: "tintAlpha",
                                     isNumber: true,
-                                    category: toolsArray[13],
                                 })
                             }}
                         />

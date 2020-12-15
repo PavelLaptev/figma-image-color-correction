@@ -8,7 +8,6 @@ interface Props {
     icon?: string
     checked?: boolean
     defaultChecked?: boolean
-    isDefaultValue?: boolean
 }
 
 const ToolButton: React.FunctionComponent<Props> = props => {
@@ -26,7 +25,6 @@ const ToolButton: React.FunctionComponent<Props> = props => {
                 value={`${props.icon}`}
                 onChange={() => {}}
             />
-            <div className={styles.isDefaultPoint} />
             <Icon name={props.icon} className={styles.icon} />
         </div>
     )
@@ -36,7 +34,6 @@ ToolButton.defaultProps = {
     icon: null,
     checked: false,
     defaultChecked: false,
-    isDefaultValue: true,
 } as Partial<Props>
 
 export default ToolButton
