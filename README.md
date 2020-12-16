@@ -2,7 +2,7 @@
 
 ![Plugin preview](web-preview.png)
 
-#### [DOWNLOAD PLUGIN](https://www.figma.com/community/plugin/914972720109480252/Image-Editor)
+### [DOWNLOAD PLUGIN](https://www.figma.com/community/plugin/914972720109480252/Image-Editor)
 
 Manipulate image with many different color adjustments and filters.
 
