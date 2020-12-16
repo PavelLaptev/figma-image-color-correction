@@ -1,6 +1,6 @@
 # Figma Image Editor
 
-![Plugin preview](web-preview.jpg)
+![Plugin preview](web-preview.png)
 
 Manipulate image with many different color adjustments and filters.
 
