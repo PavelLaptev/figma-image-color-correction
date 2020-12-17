@@ -13,17 +13,27 @@ interface RefObject {
 }
 
 const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
-    // const [selectedRadio, setSelectedRadio] = React.useState(props.value)
     const [thumbOffset, setThumbOffset] = React.useState(0)
 
     React.useImperativeHandle(ref, () => ({
-        reset() {
-            setThumbOffset(0)
+        reset(val) {
+            props.labels.map((item, i) => {
+                if (item === val) {
+                    setThumbOffset((100 / props.labels.length) * i)
+                }
+            })
+        },
+        getLabels() {
+            return props.labels
         },
     }))
 
     const handleClick = e => {
-        setThumbOffset(e.target.offsetLeft)
+        props.labels.map((item, i) => {
+            if (item === e.target.textContent) {
+                setThumbOffset((100 / props.labels.length) * i)
+            }
+        })
         props.onClick(e)
     }
 
@@ -42,7 +52,7 @@ const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
                 className={styles.thumb}
                 style={{
                     width: `${100 / props.labels.length}%`,
-                    left: `${thumbOffset}px`,
+                    left: `${thumbOffset}%`,
                 }}
             />
         </form>

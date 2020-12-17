@@ -14,8 +14,8 @@ const Range = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
     const [val, setVal] = React.useState(0)
 
     React.useImperativeHandle(ref, () => ({
-        reset() {
-            setVal(0)
+        reset(val) {
+            setVal(val)
         },
     }))
 

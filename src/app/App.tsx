@@ -317,25 +317,21 @@ const App = ({}) => {
     ////////////////////////////////////////////////
     //////////// CHANGE STATE ON CHANGE ////////////
     ////////////////////////////////////////////////
-    const setStateOnChange = ({
-        event,
-        prop,
-        isNumber = false,
-        value = null,
-    }) => {
+    const setStateOnChange = ({ event, prop, type }) => {
         setStates(p => {
-            if (value === null) {
-                return {
-                    ...p,
-                    [prop]: isNumber
-                        ? Number(event.target.value)
-                        : event.target.textContent,
+            let returnValueType = type => {
+                if (type === "number") {
+                    return Number(event.target.value)
                 }
-            } else {
-                return {
-                    ...p,
-                    [prop]: event.target[value],
+
+                if (type === "switch") {
+                    return event.target.textContent
                 }
+            }
+
+            return {
+                ...p,
+                [prop]: returnValueType(type),
             }
         })
     }
@@ -380,7 +376,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "brightness",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -394,7 +390,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "contrast",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -416,7 +412,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "hue",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -430,7 +426,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "saturation",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -452,7 +448,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "channelsRed",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -466,7 +462,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "channelsGreen",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -480,7 +476,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "channelsBlue",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -500,7 +496,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "exposure",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -520,7 +516,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "gamma",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -540,7 +536,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "blur",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -561,7 +557,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "lensblurRadius",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -574,7 +570,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "lensblurBrightness",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -587,7 +583,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "lensblurAngle",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -608,7 +604,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "sharpenRadius",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -621,7 +617,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "sharpenStrength",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -641,7 +637,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "vibrance",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -660,6 +656,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "invert",
+                                type: "switch",
                             })
                         }}
                     />
@@ -678,6 +675,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "mirror",
+                                type: "switch",
                             })
                         }}
                     />
@@ -698,7 +696,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "noiseStrength",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -711,7 +709,7 @@ const App = ({}) => {
                             setStateOnChange({
                                 event: e,
                                 prop: "noiseTone",
-                                isNumber: true,
+                                type: "number",
                             })
                         }}
                     />
@@ -731,6 +729,7 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "dottetMode",
+                                    type: "switch",
                                 })
                             }}
                             labels={["Off", "Dotted", "Halftone"]}
@@ -749,7 +748,7 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "dottetAngle",
-                                    isNumber: true,
+                                    type: "number",
                                 })
                             }}
                         />
@@ -762,7 +761,7 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "dottetSize",
-                                    isNumber: true,
+                                    type: "number",
                                 })
                             }}
                         />
@@ -782,7 +781,7 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "tintColor",
-                                    isNumber: true,
+                                    type: "number",
                                 })
                             }}
                         />
@@ -797,7 +796,7 @@ const App = ({}) => {
                                 setStateOnChange({
                                     event: e,
                                     prop: "tintAlpha",
-                                    isNumber: true,
+                                    type: "number",
                                 })
                             }}
                         />
