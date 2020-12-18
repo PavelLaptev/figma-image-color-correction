@@ -11,7 +11,7 @@ You can also save and load your own presets.
 
 ---
 
-### 📺 [Demo video on YouTube](https://youtu.be/Bij7PVnnRGE)
+### 📺 [Demo video on YouTube](https://youtu.be/9dKERyUiT1c)
 
 ---
 
