@@ -11,7 +11,6 @@
     "dependencies": {
         "@create-figma-plugin/ui": "0.0.54",
         "file-saver": "^2.0.5",
-        "glfx": "0.0.4",
         "react": "^17.0.1",
         "react-dom": "^17.0.1"
     },

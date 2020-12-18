@@ -6,8 +6,9 @@
 
 ---
 
-Manipulate image with many different color adjustments and filters.
-You can also save and load your own presets.
+-   Manipulate image with many different color adjustments and filters.
+-   Save and load your own presets
+-   Plugin takes and keeps the original resolution of the image.
 
 ---
 
