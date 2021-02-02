@@ -54,7 +54,7 @@ figma.ui.onmessage = msg => {
         const imageHash = figma.createImage(msg.bytes).hash
 
         const newFill = {
-            ...currentFills[0],
+            ...currentFills[currentFills.length - 1],
             imageHash: imageHash,
         }
 
@@ -75,4 +75,4 @@ figma.ui.onmessage = msg => {
 figma.currentPage.setRelaunchData({ open: "" })
 
 // TO-DO
-// Add original images size caption
+// Add more filters
