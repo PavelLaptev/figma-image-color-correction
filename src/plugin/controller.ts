@@ -3,18 +3,6 @@
 // Show UI
 figma.showUI(__html__, { width: 456, height: 690 })
 
-export function openLink(url) {
-    figma.showUI(
-        '<script>window.open("' +
-            url +
-            '", "_blank"); parent.postMessage({ pluginMessage: { type: "close" } }, "*");</script>',
-        { visible: false }
-    )
-    setTimeout(() => {
-        figma.closePlugin("(♡-_-♡) 𝙏𝙝𝙖𝙣𝙠 𝙮𝙤𝙪 𝙎𝙚𝙣𝙥𝙖𝙞 ")
-    }, 500)
-}
-
 const sendFullImage = () => {
     try {
         let node = figma.currentPage.selection[0]
@@ -64,6 +52,12 @@ figma.ui.onmessage = msg => {
     if (msg.type !== "img" && !node) {
         figma.notify("📌 Select frame with image", {
             timeout: 2000,
+        })
+    }
+
+    if (msg.type === "donate-link") {
+        figma.notify("(♡-_-♡) 𝙏𝙝𝙖𝙣𝙠 𝙮𝙤𝙪 𝙎𝙚𝙣𝙥𝙖𝙞 ", {
+            timeout: 5000,
         })
     }
 }

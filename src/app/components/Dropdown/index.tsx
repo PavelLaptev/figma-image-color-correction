@@ -34,7 +34,10 @@ const Dropdown: React.FunctionComponent<Props> = props => {
                         <Button
                             text={"Support plugin"}
                             onMouseDown={() =>
-                                console.log("Thank you for your donation!")
+                                parent.postMessage(
+                                    { pluginMessage: { type: "donate-link" } },
+                                    "*"
+                                )
                             }
                         />
                     </a>
