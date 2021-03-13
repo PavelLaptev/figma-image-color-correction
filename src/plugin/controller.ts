@@ -66,10 +66,6 @@ figma.ui.onmessage = msg => {
             timeout: 2000,
         })
     }
-
-    if (msg.type === "donate-link") {
-        openLink("https://www.paypal.com/paypalme/pavellaptev")
-    }
 }
 
 figma.currentPage.setRelaunchData({ open: "" })

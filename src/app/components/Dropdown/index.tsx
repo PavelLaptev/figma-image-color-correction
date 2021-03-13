@@ -27,15 +27,17 @@ const Dropdown: React.FunctionComponent<Props> = props => {
                 }`}
             >
                 <div className={`${styles.childContainer}`}>
-                    <Button
-                        text={"Support plugin"}
-                        onMouseDown={() =>
-                            parent.postMessage(
-                                { pluginMessage: { type: "donate-link" } },
-                                "*"
-                            )
-                        }
-                    />
+                    <a
+                        target="_blank"
+                        href="https://www.paypal.com/paypalme/pavellaptev"
+                    >
+                        <Button
+                            text={"Support plugin"}
+                            onMouseDown={() =>
+                                console.log("Thank you for your donation!")
+                            }
+                        />
+                    </a>
                 </div>
                 <div
                     className={`${styles.childContainer}`}

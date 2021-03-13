@@ -8,11 +8,7 @@ interface Props {
     onClick?: (e) => void
 }
 
-interface RefObject {
-    reset: (val) => void
-}
-
-const Switcher = React.forwardRef((props: Props, ref: React.Ref<RefObject>) => {
+const Switcher = React.forwardRef((props: Props, ref: React.RefObject<any>) => {
     const [thumbOffset, setThumbOffset] = React.useState(0)
 
     React.useImperativeHandle(ref, () => ({
